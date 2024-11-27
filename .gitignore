@@ -1,0 +1,87 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django specific
+*.sqlite3
+db.sqlite3
+*.pyc
+
+# ENV files
+.env
+
+# Virtual environment
+venv/
+env/
+ENV/
+*.egg-info/
+.eggs/
+
+# Logs
+*.log
+logs/
+
+# Media and static files
+/staticfiles/
+/media/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# macOS specific files
+.DS_Store
+
+# Node.js dependencies (if applicable)
+node_modules/
+
+# Coverage reports
+htmlcov/
+*.cover
+.coverage
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.coveragerc
+
+# Testing and temporary files
+.tox/
+*.test
+*.temp
+*.tmp
+
+# Deployment files
+*.bak
+*.old
+*.orig
+*.rej
+*.stackdump
+
+# Security sensitive files
+*.pem
+*.key
+
+# Generated documentation
+/build/
+docs/_build/
+*.rst
+
+# Heroku specific
+Procfile
+runtime.txt
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Other backups
+*.~*
+*~
+
+# Windows specific
+Thumbs.db
