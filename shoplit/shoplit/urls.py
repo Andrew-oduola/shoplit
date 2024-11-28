@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.jwt')),
-    path('', include('customuser.urls'))
+    path('', include('customuser.urls')),
+    path('store/', include('products.urls'))
 ]
