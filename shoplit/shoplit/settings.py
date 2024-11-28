@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,12 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'customuser',
+    'products',
+
     'rest_framework',
     'rest_framework_simplejwt',
-
     'djoser',
+    'phonenumber_field'
 
-    'customuser',
+    
 ]
 
 MIDDLEWARE = [
@@ -138,4 +142,12 @@ AUTH_USER_MODEL = 'customuser.CustomUser'
 
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
+   'ACCESS_TOKEN_LIFETIME': timedelta(days=5)
+}
+
+DJOSER = {
+    'SERIALIZERS': {
+        'user_create': 'customuser.serializers.UserCreateSerializer',
+        "current_user": "customuser.serializers.UserSerializer"
+    }
 }
