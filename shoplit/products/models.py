@@ -1,4 +1,7 @@
 from django.db import models
+
+from customuser.models import Vendor
+
 import uuid
 
 # Create your models here.
@@ -38,6 +41,7 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)  # Supports prices up to 999,999,999.99
     stock_quantity = models.PositiveIntegerField(default=0)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, null=True, blank=True)
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_NULL,
