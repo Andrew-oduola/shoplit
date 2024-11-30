@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     'customuser',
     'products',
+    'carts',
 
     'rest_framework',
     'rest_framework_simplejwt',

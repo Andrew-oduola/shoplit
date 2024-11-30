@@ -16,12 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from debug_toolbar.toolbar import debug_toolbar_urls
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^auth/', include('djoser.urls')),
-    re_path(r'^auth/', include('djoser.urls.jwt')),
-    path('', include('customuser.urls')),
-    path('store/', include('products.urls'))
-]  + debug_toolbar_urls()
+    path('auth/', include('djoser.urls')),  # User registration and profile management
+    path('auth/', include('djoser.urls.jwt')),  # JWT authentication
+    path('api/', include('customuser.urls')),  # Custom user-related actions
+    path('api/products/', include('products.urls')),  # Product and category management
+    path('api/cart/', include('carts.urls')),  # Shopping cart management
+]
+
+# Add debug toolbar URLs in development
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]

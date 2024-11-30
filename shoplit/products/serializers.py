@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import Category, SubCategory, Product, CartItem, Cart
+from .models import Category, SubCategory, Product
+from carts.models import CartItem, Cart
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,21 +30,3 @@ class ProductSerializer(serializers.ModelSerializer):
         # Create the Product instance
         return super().create(validated_data)
     
-
-class CartItemSerializer(serializers.ModelSerializer):
-    total_price = serializers.ReadOnlyField()
-
-    class Meta:
-        model = CartItem
-        fields = ['id', 'product', 'quantity', 'total_price']
-
-class CartSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(many=True, read_only=True)
-    total_price = serializers.ReadOnlyField()
-
-    class Meta:
-        model = Cart
-        fields = ['id', 'user', 'items', 'total_price', 'created_at']
-        read_only_fields = ['user', 'total_price', 'created_at']
-
-        
