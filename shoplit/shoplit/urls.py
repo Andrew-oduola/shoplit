@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/', include('customuser.urls')),  # Custom user-related actions
     path('api/products/', include('products.urls')),  # Product and category management
     path('api/cart/', include('carts.urls')),  # Shopping cart management
+    path('api/orders/', include('orders.urls')) # Orders management
 ]
 
 # Add debug toolbar URLs in development
