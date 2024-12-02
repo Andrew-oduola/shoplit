@@ -13,6 +13,6 @@ class OrderViewSet(ModelViewSet):
         #Ensure you are only returning the user's order
         return self.queryset.filter(user=self.request.user)
     
-    def perform_create(self):
+    def perform_create(self, serializer):
         # Automatically assign the login user to the order
         serializer.save(user=self.request.user)
