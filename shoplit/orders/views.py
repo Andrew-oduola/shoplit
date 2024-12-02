@@ -15,4 +15,5 @@ class OrderViewSet(ModelViewSet):
     
     def perform_create(self, serializer):
         # Automatically assign the login user to the order
+        print('Calling serializer from viewset')
         serializer.save(user=self.request.user)
