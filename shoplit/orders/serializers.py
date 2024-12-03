@@ -50,29 +50,58 @@ class OrderSerializers(serializers.ModelSerializer):
     def create(self, validated_data):
         # Extract items data from the validated data
         items_data = validated_data.pop('items')
-        
+
         # Create the order instance
         order = Order.objects.create(**validated_data)
 
-        # Iterate through each item data and create an associated OrderItem instance
+        # Iterate through each item data and create/update associated OrderItem instances
         for item_data in items_data:
-            # Set the 'order' field for each item to the created order instance
-            item_data['order'] = order  # Link the order to the OrderItem
-            OrderItemSerializer.create(OrderItemSerializer(), validated_data=item_data)
+            product = item_data['product']
+            existing_item = OrderItem.objects.filter(order=order, product=product).first()
+
+            if existing_item:
+                # Update quantity and price of the existing item
+                existing_item.quantity += item_data['quantity']
+                if product.stock_quantity < item_data['quantity']:
+                    raise serializers.ValidationError(
+                        f"Not enough stock for product {product.name}."
+                    )
+                product.stock_quantity -= item_data['quantity']
+                product.save()
+                existing_item.price = product.price * existing_item.quantity
+                existing_item.save()
+            else:
+                # Create a new item if it doesn't already exist
+                item_data['order'] = order
+                OrderItemSerializer.create(OrderItemSerializer(), validated_data=item_data)
 
         return order
-    
+
     def update(self, instance, validated_data):
-        # Update the order fields first
+        # Update the order fields
         items_data = validated_data.pop('items', [])
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
-        # Add new items if provided
-        if items_data:
-            for item_data in items_data:
-                # Link the order to the new item
+        # Handle items: update existing or add new
+        for item_data in items_data:
+            product = item_data['product']
+            existing_item = OrderItem.objects.filter(order=instance, product=product).first()
+
+            if existing_item:
+                # Update quantity and price of the existing item
+                existing_item.quantity += item_data['quantity']
+                if product.stock_quantity < item_data['quantity']:
+                    raise serializers.ValidationError(
+                        f"Not enough stock for product {product.name}."
+                    )
+                product.stock_quantity -= item_data['quantity']
+                product.save()
+                existing_item.price = product.price * existing_item.quantity
+                existing_item.save()
+            else:
+                # Create a new item if it doesn't already exist
                 item_data['order'] = instance
                 OrderItemSerializer.create(OrderItemSerializer(), validated_data=item_data)
 
