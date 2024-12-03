@@ -1,5 +1,3 @@
-
-
 from rest_framework.viewsets import ModelViewSet
 
 from .models import CustomUser, Vendor
