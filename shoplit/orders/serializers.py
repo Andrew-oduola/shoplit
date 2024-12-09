@@ -42,10 +42,13 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializers(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True)
+    total_amount = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    payment_reference = serializers.CharField(read_only=True)
+    status = serializers.CharField(read_only=True)
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'status', 'created_at', 'updated_at', 'items']
+        fields = ['id', 'user', 'status', 'created_at', 'updated_at', 'items', 'total_amount', 'payment_reference', 'status']
 
     def create(self, validated_data):
         # Extract items data from the validated data

@@ -31,6 +31,9 @@ SECRET_KEY = 'django-insecure-dd1#4676h=_0l^bp-3o48e@kw+tvs0)-x@*n2uty06%^bhfe61
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
+PAYSTACK_SECRET_KEY = os.getenv('PAYSTACK_SECRET_KEY')
+PAYSTACK_PUBLISHABLE = os.getenv('PAYSTACK_PUBLISHABLE')
+
 ALLOWED_HOSTS = []
 
 
@@ -49,6 +52,7 @@ INSTALLED_APPS = [
     'carts',
     'orders',
     'wishlist',
+    'payments',
 
     'rest_framework',
     'rest_framework_simplejwt',

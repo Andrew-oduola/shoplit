@@ -26,7 +26,8 @@ urlpatterns = [
     path('api/products/', include('products.urls')),  # Product and category management
     path('api/cart/', include('carts.urls')),  # Shopping cart management
     path('api/orders/', include('orders.urls')), # Orders management
-    path('api/wishlist/', include('wishlist.urls')) # Wishlist management
+    path('api/wishlist/', include('wishlist.urls')), # Wishlist management
+    path('api/payments/', include('payments.urls')),
 ]
 
 # Add debug toolbar URLs in development

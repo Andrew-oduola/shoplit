@@ -17,8 +17,13 @@ class Order(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='orders')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    # payment_reference = models.CharField(max_length=100, blank=True, null=True)  # Paystack transaction reference
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def total_amount(self):
+        return sum(item.price * item.quantity for item in self.items.all())
 
     def __str__(self):
         return f"Order {self.id} - {self.user.email}"
