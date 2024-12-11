@@ -45,6 +45,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+import json
 
 from .models import Payment
 from .serializers import PaymentSerializer
@@ -52,6 +56,12 @@ from .paystack import Paystack
 from orders.models import Order  # Import your Order model
 
 class InitializePaymentView(APIView):
+    """ 
+    Initialize payment for an order.
+
+    Endpoint: 
+    POST /payments/initialize/{order_id}// -> Initialize Payment
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, order_id):
@@ -82,6 +92,12 @@ class InitializePaymentView(APIView):
 
 
 class VerifyPaymentView(APIView):
+    """ 
+    Initialize payment for an order.
+
+    Endpoint: 
+    POST /payments/verify/{payment ref}// -> Verify Payment
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, reference):
@@ -105,3 +121,21 @@ class VerifyPaymentView(APIView):
         payment.status = 'FAILED'
         payment.save()
         return Response({"error": "Payment verification failed."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class PaystackWebhookView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        event = json.loads(request.body)
+        if event.get('event') == 'charge.success':
+            reference = event['data']['reference']
+            # Update the corresponding order status
+            try:
+                order = Order.objects.get(payment_reference=reference)
+                order.status = 'PAID'
+                order.save()
+            except Order.DoesNotExist:
+                pass
+        return Response({"status": "success"}, status=200)

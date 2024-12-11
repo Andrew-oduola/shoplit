@@ -6,6 +6,17 @@ from .serializers import VendorSerializer
 
 # Create your views here.
 class VendorViewset(ModelViewSet):
+    """
+    Handles operations for Vendor model.
+
+    Endpoints:
+        - GET    /vendors/        -> List all categories if user is an admin and user vendor if not.
+        - POST   /vendors/        -> Create a new vendor.
+        - GET    /vendors/{id}/   -> Retrieve a specific vendor.
+        - PUT    /vendors/{id}/   -> Update a specific vendor.
+        - PATCH  /vendors/{id}/   -> Partially update a vendor.
+        - DELETE /vendors/{id}/   -> Delete a vendor.
+    """
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
 

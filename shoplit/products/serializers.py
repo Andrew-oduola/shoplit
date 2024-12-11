@@ -16,6 +16,9 @@ class SubCategorySerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    average_rating = serializers.FloatField(read_only=True)
+    review_count = serializers.FloatField(read_only=True)
+
     class Meta:
         model = Product
         fields = [
@@ -25,7 +28,9 @@ class ProductSerializer(serializers.ModelSerializer):
             'price',
             'stock_quantity',
             'category',  # Auto-populated based on the subcategory
-            'subcategory'
+            'subcategory',
+            'average_rating',
+            'review_count'
         ]
         read_only_fields = ['category']
 

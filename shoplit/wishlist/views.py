@@ -7,6 +7,16 @@ from .serializers import WishListSerializer
 from .models import WishList
 # Create your views here.
 class WishListViewSet(viewsets.ModelViewSet):
+    """
+    Handles the WishList Model
+
+    Endpoints
+    GET /wishlists/ -> List all the product in the wishlists of a user and all users if user is superuser
+    POST /wishlists/ -> Create a new wishlist for a user
+    PUT /wishlists/{id} -> Update a wishlist
+    DELETE /wishlists/{id} -> Delete a wishlist
+
+    """
     queryset = WishList.objects.all()
     serializer_class = WishListSerializer
     permission_classes = [IsAuthenticated]

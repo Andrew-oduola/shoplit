@@ -13,6 +13,16 @@ from .serializers import CartItemSerializer, CartSerializer
 
 
 class CartItemViewSet(ModelViewSet):
+    """
+    Handles operations for CartItem model.
+
+    Endpoints:
+        - GET    /cart/items        -> List all items in the users cart.
+        - POST   /cart/items/        -> Add a new item to the cart.
+        - GET    /cart/items/{id}/   -> Retrieve a specific cart item.
+        - PUT    /cart/items/{id}/   -> Update a specific cart item.
+        - DELETE /cart/items/{id}/   -> Delete a cart item.
+    """
     serializer_class = CartItemSerializer
     permission_classes = [IsAuthenticated]
 
@@ -47,6 +57,13 @@ class CartItemViewSet(ModelViewSet):
         return Response({"message": "Item removed from cart."}, status=status.HTTP_204_NO_CONTENT)
     
 class CartViewSet(ViewSet):
+    """
+    Handles operations for Cart model.
+
+    Endpoints:
+        - GET    /cart/        -> Shows the users cart.
+        - GET   /cart/total_price/        -> Returns the cart total price.
+    """
     permission_classes = [IsAuthenticated]
     
     def list(self, request):

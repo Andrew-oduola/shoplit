@@ -7,6 +7,17 @@ from .serializers import OrderSerializers
 
 # Create your views here.
 class OrderViewSet(ModelViewSet):
+    """
+    Handles operations for Order model.
+
+    Endpoints:
+        - GET    /orders        -> List all orders by the user.
+        - POST   /orders/        -> Create a new order for the user.
+        - GET    /orders/{id}/   -> Retrieve a specific order.
+        - PUT    /orders/{id}/   -> Update a specific order.
+        - PATCH  /orders/{id}/   -> Patch update on a specific order.
+        - DELETE /orders/{id}/   -> Delete a order.
+    """
     queryset = Order.objects.all()
     serializer_class = OrderSerializers
     permission_classes = [IsAuthenticated]
@@ -19,49 +30,3 @@ class OrderViewSet(ModelViewSet):
         # Automatically assign the login user to the order
         print('Calling serializer from viewset')
         serializer.save(user=self.request.user)
-
-    # @action(detail=True, methods=['post'])
-    # def initialize_payment(self, request, pk=None):
-    #     """
-    #     Initialize a payment for the order
-    #     """
-    #     order = self.get_object()
-    #     paystack = Paystack()
-
-    #     # Calculate total amount (in kobo)
-    #     amount = int(order.total_amount * 100)  # Convert to kobo
-
-    #     # Initialize payment
-    #     response = paystack.initialize_payment(email=request.user.email, amount=amount)
-    #     if response['status']:
-    #         # Save the payment reference to the order
-    #         order.payment_reference = response['data']['reference']
-    #         order.save()
-
-    #         return Response({
-    #             "payment_url": response['data']['authorization_url'],
-    #             "reference": response['data']['reference']
-    #         }, status=status.HTTP_200_OK)
-
-    #     return Response({"error": response['message']}, status=status.HTTP_400_BAD_REQUEST)
-
-    # @action(detail=True, methods=['post'])
-    # def verify_payment(self, request, pk=None):
-    #     """
-    #     Verify payment for the order
-    #     """
-    #     order = self.get_object()
-    #     paystack = Paystack()
-
-    #     # Verify payment
-    #     response = paystack.verify_payment(reference=order.payment_reference)
-    #     if response['status']:
-    #         # Update order status if payment was successful
-    #         order.status = 'PAID'
-    #         order.save()
-    #         return Response({"message": "Payment verified successfully!"}, status=status.HTTP_200_OK)
-
-    #     # Mark order as failed if payment verification fails
-    #     order.status = 'FAILED'
-    #     order.save()
-    #     return Response({"error": "Payment verification failed."}, status=status.HTTP_400_BAD_REQUEST)

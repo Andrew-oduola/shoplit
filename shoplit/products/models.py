@@ -69,3 +69,14 @@ class Product(models.Model):
         if self.subcategory and self.subcategory.category:
             self.category = self.subcategory.category
         super().save(*args, **kwargs)
+
+    @property
+    def average_rating(self):
+        reviews = self.reviews.all()
+        if not reviews.exists():
+            return 0
+        return reviews.aggregate(models.Avg('rating'))['rating__avg']
+    
+    @property
+    def review_count(self):
+        return self.reviews.count()
