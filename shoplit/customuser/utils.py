@@ -7,12 +7,25 @@ from pprint import pprint
 
 PRODUCTS_METADATA_CSV = settings.DATA_DIR / "ratings_Electronics.csv"
 
-def load_products_data(limit=10):
+def load_products_data(limit=1):
     with open(PRODUCTS_METADATA_CSV, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
+        dataset = []
         for i, row in enumerate(reader):
             pprint(row)
-            if i >= limit:
+            _id = row.get("user_id")
+            try:
+                _id  = int(_id)
+            except:
+                _id = None
+            data = {
+                "user_id": _id,
+                "product_id": row.get("product_id"),
+                "ratings": row.get("rattings"),
+                "timestamp": row.get("timestamp"),
+            }
+            dataset.append(data)
+            if i + 1 >= limit:
                 break
             
 

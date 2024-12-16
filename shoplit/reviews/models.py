@@ -20,3 +20,5 @@ class Review(models.Model):
     
     class Meta:
         unique_together = ('user', 'product') # One review per product per user
+
+        

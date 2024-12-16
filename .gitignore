@@ -4,8 +4,7 @@ __pycache__/
 *$py.class
 
 
-/shoplit/recommendations/data/ratings_Electronics.csv
-
+/shoplit/data/ratings_Electronics.csv
 
 # Django specific
 *.sqlite3
