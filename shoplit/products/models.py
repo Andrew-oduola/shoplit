@@ -80,3 +80,13 @@ class Product(models.Model):
     @property
     def review_count(self):
         return self.reviews.count()
+    
+    def reduce_stock(self, quantity):
+        if quantity > self.stock_quantity:
+            raise ValueError("Insufficient stock")
+        self.stock_quantity -= quantity
+        self.save()
+
+    def increase_stock(self, quantity):
+        self.stock_quantity += quantity
+        self.save()
