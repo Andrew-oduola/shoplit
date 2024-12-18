@@ -49,3 +49,33 @@ class ProductViewSet(ModelViewSet):
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from .models import Product
+
+class AdjustStockView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            product = Product.objects.get(pk=pk)
+            quantity = int(request.data.get('quantity'))
+            adjustment_type = request.data.get('type', 'MANUAL').upper()
+
+            if adjustment_type == 'INCREASE':
+                product.increase_stock(quantity)
+            elif adjustment_type == 'DECREASE':
+                product.reduce_stock(quantity)
+            else:
+                return Response({"error": "Invalid adjustment type"}, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({"message": "Stock updated successfully"}, status=status.HTTP_200_OK)
+        except Product.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
