@@ -105,7 +105,7 @@ WSGI_APPLICATION = 'shoplit.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -113,6 +113,18 @@ DATABASES = {
         'USER': 'postgres',  # Or your specific PostgreSQL user
         'PASSWORD': os.getenv('DATABASE_PASSWORD'),  # Replace with the actual password
         'HOST': '127.0.0.1',  # Use 'localhost' or the appropriate host
+        'PORT': '5432',  # Default PostgreSQL port
+    }
+}
+'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'shoplit_database',
+        'USER': 'andrew',  # Or your specific PostgreSQL user
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),  # Replace with the actual password
+        'HOST': 'shoplit-database.cbsek0swuyws.eu-north-1.rds.amazonaws.com',  # Use 'localhost' or the appropriate host
         'PORT': '5432',  # Default PostgreSQL port
     }
 }
