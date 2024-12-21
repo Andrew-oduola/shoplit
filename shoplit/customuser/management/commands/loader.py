@@ -31,3 +31,5 @@ class Command(BaseCommand):
             print(f"{len(user_bulk)} new users just created")
             if show_total:
                 print(f"Total users: {User.objects.count()}")
+
+                
