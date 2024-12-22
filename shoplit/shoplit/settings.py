@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     'djoser',
     'phonenumber_field',
     'debug_toolbar',
-
+    'django_filters',
     
 ]
 
