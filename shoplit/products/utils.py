@@ -118,27 +118,35 @@ def generate_subcategories(category):
         print(f"Subcategory '{subcategory_name}' created under '{category.name}'")
 
 
-def generate_products(subcategories, num=10):
+def generate_products(subcategories=subcategories, num=10):
     products = []
-    
-    for subcategory in subcategories:
-        for _ in range(num):
-            # Generate fake product details
-            product_name = fake.word() 
-            price = round(uniform(10, 1000), 2)  
-            stock_quantity = randint(1, 100)  
-            description = fake.text(max_nb_chars=200)  
-            
-            # Create the product and save to the database
-            product = Product.objects.create(
-                name=product_name,
-                description=description,
-                price=price,
-                stock_quantity=stock_quantity,
-                subcategory=subcategory
-            )
-            
-            products.append(product)
+    print(f"Generating products {num} per subcategory")
+    for category in subcategories:
+        for subcategory in subcategories[category]:
+            for _ in range(num):
+                # Generate fake product details
+                product_name = fake.word() 
+                price = round(uniform(10, 1000), 2)  
+                stock_quantity = randint(1, 100)  
+                description = fake.text(max_nb_chars=200)  
+                
+                # Create the product and save to the database
+                try:
+                    product = Product(
+                        name=product_name,
+                        description=description,
+                        price=price,
+                        stock_quantity=stock_quantity,
+                        subcategory=SubCategory.objects.get(name=subcategory),
+                        category=SubCategory.objects.get(name=subcategory).category
+                    )
+                except:
+                    pass
+                
+                products.append(product)
+                # print(f"Product updated with {product}")
+
+    Product.objects.bulk_create(products, ignore_conflicts=True)
     
     return products
 
@@ -153,4 +161,3 @@ seed_database()"""
 
 
 # generate_categories()
-
