@@ -1,4 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.pagination import PageNumberPagination
 from .serializers import CategorySerializer, SubCategorySerializer, \
     ProductSerializer
 from .models import Category, SubCategory, Product
@@ -47,8 +48,20 @@ class ProductViewSet(ModelViewSet):
         - PATCH  /products/{id}/   -> Partially update a product.
         - DELETE /products/{id}/   -> Delete a product.
     """
-    queryset = Product.objects.all()
+    
     serializer_class = ProductSerializer
+    pagination_class = PageNumberPagination
+    
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        category_id = self.request.query_params.get('category_id')
+        subcategory_id = self.request.query_params.get('subcategory_id')
+        if category_id:
+            queryset = queryset.filter(category__id=category_id)
+        elif subcategory_id:
+            queryset = queryset.filter(subcategory__id=subcategory_id)
+        return queryset
 
 
 from rest_framework.views import APIView
