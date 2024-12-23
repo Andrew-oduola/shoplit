@@ -16,6 +16,7 @@ class Category(models.Model):
     
     class Meta:
         verbose_name_plural = "categories"
+        indexes = [ models.Index(fields=['name']), ]
 
 
 # Represents a subcategory under a specific category
@@ -32,6 +33,7 @@ class SubCategory(models.Model):
     class Meta:
         unique_together = ('category', 'name')  # Ensures unique subcategories within a category
         verbose_name_plural = "subcategories"
+        indexes = [ models.Index(fields=['category', 'name']), ]
 
     def __str__(self):
         return f"{self.category.name} - {self.name}"
@@ -57,11 +59,11 @@ class Product(models.Model):
 
     class Meta:
         unique_together = ('name', 'subcategory')
-        indexes = [
-            models.Index(fields=['name']),
-            models.Index(fields=['category']),
-            models.Index(fields=['subcategory']),
-        ]
+        indexes = [ models.Index(fields=['name']), 
+                   models.Index(fields=['category']), 
+                   models.Index(fields=['subcategory']), 
+                   models.Index(fields=['price']), 
+                   models.Index(fields=['created_at']), ]
 
     def __str__(self):
         return self.name
