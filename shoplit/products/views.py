@@ -4,6 +4,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from .serializers import CategorySerializer, SubCategorySerializer, \
     ProductSerializer
+from rest_framework.permissions import IsAdminOrReadOnly
 from .models import Category, SubCategory, Product
 from .filters import ProductFilterSet
 
@@ -37,6 +38,7 @@ class SubCategoryViewSet(ModelViewSet):
     """
     queryset = SubCategory.objects.all()
     serializer_class = SubCategorySerializer
+    permission_classes = [IsAdminOrReadOnly]
 
 class ProductViewSet(ModelViewSet):
     """
