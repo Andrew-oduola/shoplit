@@ -118,7 +118,7 @@ def generate_subcategories(category):
         print(f"Subcategory '{subcategory_name}' created under '{category.name}'")
 
 
-def generate_products(subcategories=subcategories, num=10):
+def generate_products(subcategories=subcategories, num=1):
     products = []
     print(f"Generating products {num} per subcategory")
     for category in subcategories:
