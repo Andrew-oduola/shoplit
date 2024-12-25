@@ -4,7 +4,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from .serializers import CategorySerializer, SubCategorySerializer, \
     ProductSerializer
-from rest_framework.permissions import IsAdminOrReadOnly
+from .permissions import IsAdminUserOrReadOnly
 from .models import Category, SubCategory, Product
 from .filters import ProductFilterSet
 
@@ -23,6 +23,10 @@ class CategoryViewSet(ModelViewSet):
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [IsAdminUserOrReadOnly]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['name','description']
+    ordering_fields = ['name', 'updated_at']
 
 class SubCategoryViewSet(ModelViewSet):
     """
@@ -38,7 +42,10 @@ class SubCategoryViewSet(ModelViewSet):
     """
     queryset = SubCategory.objects.all()
     serializer_class = SubCategorySerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminUserOrReadOnly]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['name','description']
+    ordering_fields = ['name', 'updated_at']
 
 class ProductViewSet(ModelViewSet):
     """

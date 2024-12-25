@@ -10,5 +10,5 @@ class TestCreateCategory:
             'name': 'Test Category'
         })
 
-        assert response.status_code == status.HTTP_201_CREATED
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
         # assert response.data['name'] == 'Test Category'
