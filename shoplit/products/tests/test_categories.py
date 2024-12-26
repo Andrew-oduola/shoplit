@@ -1,7 +1,11 @@
 from rest_framework.test import APIClient
 from rest_framework import status
+
 import pytest
+from model_bakery import baker
+
 from customuser.models import CustomUser
+from products.models import Category, SubCategory, Product
 
 @pytest.fixture
 def authenticate(api_client):
@@ -15,16 +19,16 @@ def create_category(api_client):
         return api_client.post('/api/products/categories/', category)
     return do_create_category
 
-
+@pytest.mark.django_db
 class TestCreateCategory:
-    @pytest.mark.django_db
+    
     def test_if_anomynous_create_category_return_403(self, create_category):
         response = create_category({'name': 'a'})
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-    @pytest.mark.django_db
+    
     def test_if_is_not_admin_return_403(self, authenticate, create_category):
         authenticate()
 
@@ -33,7 +37,7 @@ class TestCreateCategory:
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-    @pytest.mark.django_db
+    
     def test_if_data_is_invalid_returns_400(self, authenticate, create_category):
         authenticate(True)
 
@@ -43,7 +47,7 @@ class TestCreateCategory:
         assert response.data['name'] is not None
 
 
-    @pytest.mark.django_db
+    
     def test_if_data_is_valid_returns_201(self, authenticate, create_category):
         authenticate(True)
 
@@ -51,3 +55,16 @@ class TestCreateCategory:
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data['id'] is not None
+@pytest.mark.django_db
+class TestRetrieveCategory:
+    def test_if_category_exist_returns_200(self, api_client):
+        category = baker.make(Category)
+
+        response = api_client.get(f'/api/products/categories/{category.id}/')
+
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_if_category_did_not_exist_returns_404(self, api_client):
+        response = api_client.get(f'/api/products/categories/wwwwwwwwwwww4ew/')
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
