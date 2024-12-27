@@ -43,9 +43,10 @@ class SubCategoryViewSet(ModelViewSet):
     queryset = SubCategory.objects.all()
     serializer_class = SubCategorySerializer
     permission_classes = [IsAdminUserOrReadOnly]
-    filter_backends = [SearchFilter, OrderingFilter]
+    filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
     search_fields = ['name','description']
     ordering_fields = ['name', 'updated_at']
+    filter_fields = ['category']  # This is used by DjangoFilterBackend to create a
 
 class ProductViewSet(ModelViewSet):
     """
