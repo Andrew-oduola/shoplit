@@ -28,6 +28,20 @@ class TestListCategories:
 
         assert response.status_code == status.HTTP_200_OK
 
+    def test_if_list_categories_returns_empty_list(self, api_client):
+        response = api_client.get('/api/products/categories/')
+
+        assert response.data['count'] == 0
+
+    def test_if_list_categories_returns_list(self, api_client):
+        category = baker.make(Category)   
+
+        response = api_client.get('/api/products/categories/')
+
+        assert response.data['count'] > 0
+
+    
+
 
 @pytest.mark.django_db
 class TestCreateCategory:
