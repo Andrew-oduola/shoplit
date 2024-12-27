@@ -128,6 +128,20 @@ class TestCreateSubCategory:
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data['id'] is not None
 
+    def test_if_subcategoy_created_with_valid_data_return_expected_data(self,authenticate, create_subcategory):
+        authenticate(is_staff=True)
+        category = baker.make(Category)
+        response = create_subcategory(
+            {
+                'name': 'name', 
+                'description': 'desc', 
+                'category': category.id
+            }
+        ) 
+
+        assert response.data['name'] == 'name'
+        # assert response.description == 'desc'
+        # assert response.category == category
 
 @pytest.mark.django_db
 class TestRetrieveSubCategory:
