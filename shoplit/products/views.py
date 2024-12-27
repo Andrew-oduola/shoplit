@@ -46,7 +46,7 @@ class SubCategoryViewSet(ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
     search_fields = ['name','description']
     ordering_fields = ['name', 'updated_at']
-    filter_fields = ['category']  # This is used by DjangoFilterBackend to create a
+    filterset_fields = ['category']
 
 class ProductViewSet(ModelViewSet):
     """
@@ -63,6 +63,7 @@ class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     pagination_class = PageNumberPagination
+    permission_classes = [IsAdminUserOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilterSet
     search_fields = ['name', 'description']
