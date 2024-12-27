@@ -5,6 +5,7 @@ from customuser.models import CustomUser
 
 import pytest
 from model_bakery import baker
+from decimal import Decimal
 
 @pytest.fixture
 def authenticate(api_client):
@@ -199,4 +200,28 @@ class TestCreateProduct:
         assert response.data['price'] == 123
         assert response.data['stock_quantity'] == 1
         # assert response.data['subcategory']['id'] == subcategory.id
+
+@pytest.mark.django_db
+class TestRetriveProduct:
+    def test_if_product_exist_returns_200(self, api_client):
+        product = baker.make(Product)
+        response = api_client.get(f'/api/products/{product.id}/')
+
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_if_product_does_not_exist_returns_404(self, api_client):
+        response = api_client.get(f'/api/products/1/')
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_if_product_exist_returns_expected_data(self, api_client):
+        product = baker.make(Product)
+        response = api_client.get(f'/api/products/{product.id}/')
+
+        assert response.data['name'] == product.name
+        assert response.data['description'] == product.description
+        assert response.data['price'] == Decimal(product.price)
+        assert response.data['stock_quantity'] == product.stock_quantity
+        # assert response.data['subcategory']['id'] == product.subcategory.id
+
 

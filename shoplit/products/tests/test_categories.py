@@ -109,6 +109,7 @@ class TestRetrieveCategory:
         assert response.data['name'] == category.name
         assert response.data['description'] == category.description
 
+
 @pytest.mark.django_db
 class TestUpdateCategory:
     def test_update_put_category_returns_200(self, authenticate, api_client):
