@@ -158,6 +158,15 @@ class TestRetrieveSubCategory:
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
+    
+    def test_if_subcategory_exist_returns_expected_data(self, api_client):
+        subcategory = baker.make(SubCategory)
+
+        response = api_client.get(f'/api/products/subcategories/{subcategory.id}/')
+
+        assert response.data['name'] == subcategory.name
+        assert response.data['description'] == subcategory.description
+        assert response.data['category'] == subcategory.category.id
 
 @pytest.mark.django_db
 class TestUpdateSubCategory:
