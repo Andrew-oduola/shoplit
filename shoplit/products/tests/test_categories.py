@@ -77,6 +77,14 @@ class TestCreateCategory:
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data['id'] is not None
 
+    def test_if_category_created_with_valid_data_returns_expected_data(self, authenticate, create_category):
+        authenticate(is_staff=True)
+        response = create_category({'name': 'name', 'description': 'desc'})
+
+        assert response.data['name'] == 'name'
+        assert response.data['description'] == 'desc'
+        assert response.data['id'] is not None
+
 
 @pytest.mark.django_db
 class TestRetrieveCategory:
