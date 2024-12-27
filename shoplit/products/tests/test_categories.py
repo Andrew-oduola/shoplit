@@ -101,6 +101,13 @@ class TestRetrieveCategory:
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
+    def test_if_category_exist_returns_expected_data(self, api_client):
+        category = baker.make(Category)
+
+        response = api_client.get(f'/api/products/categories/{category.id}/')
+
+        assert response.data['name'] == category.name
+        assert response.data['description'] == category.description
 
 @pytest.mark.django_db
 class TestUpdateCategory:
