@@ -28,6 +28,23 @@ class TestListSubCategories:
 
         assert response.status_code == status.HTTP_200_OK
 
+    def test_if_list_subcategories_returns_empty_list(self, api_client):
+        response = api_client.get('/api/products/subcategories/')
+
+        assert response.data['count'] == 0
+
+    def test_if_list_subcategories_returns_list(self, api_client):
+        subcategory = baker.make(SubCategory)   
+
+        response = api_client.get('/api/products/subcategories/')
+
+        assert response.data['count'] > 0
+
+    def test_if_list_subcategories_returns_filtered_list(self, api_client):
+        subcategory = baker.make(SubCategory)   
+        response = api_client.get(f'/api/products/subcategories/?category={subcategory.category.id}')
+
+        assert response.data['count'] > 0
 
 @pytest.mark.django_db
 class TestCreateSubCategory:
