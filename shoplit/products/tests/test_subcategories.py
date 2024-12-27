@@ -32,6 +32,7 @@ class TestListSubCategories:
         response = api_client.get('/api/products/subcategories/')
 
         assert response.data['count'] == 0
+        assert response.status_code == status.HTTP_200_OK
 
     def test_if_list_subcategories_returns_list(self, api_client):
         subcategory = baker.make(SubCategory)   
@@ -39,13 +40,56 @@ class TestListSubCategories:
         response = api_client.get('/api/products/subcategories/')
 
         assert response.data['count'] > 0
+        assert response.status_code == status.HTTP_200_OK
 
     def test_if_list_subcategories_returns_filtered_list(self, api_client):
         subcategory = baker.make(SubCategory)   
         response = api_client.get(f'/api/products/subcategories/?category={subcategory.category.id}')
 
         assert response.data['count'] > 0
+        assert response.status_code == status.HTTP_200_OK
 
+    def test_if_list_subcategories_returns_searched_list(self, api_client):
+        subcategory = baker.make(SubCategory)   
+        response = api_client.get(f'/api/products/subcategories/?search={subcategory.name}')
+
+        assert response.data['count'] > 0
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_if_list_subcategories_returns_name_assending_ordered_list(self, api_client):
+        subcategory = baker.make(SubCategory)   
+        response = api_client.get(f'/api/products/subcategories/?ordering=name')
+
+        assert response.data['count'] > 0
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_if_list_subcategories_returns_name_descending_ordered_list(self, api_client):
+        subcategory = baker.make(SubCategory)   
+        response = api_client.get(f'/api/products/subcategories/?ordering=-name')
+
+        assert response.data['count'] > 0
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_if_list_subcategories_returns_update_at_assending_ordered_list(self, api_client):
+        subcategory = baker.make(SubCategory)   
+        response = api_client.get(f'/api/products/subcategories/?ordering=update_at')
+
+        assert response.data['count'] > 0
+        assert response.status_code == status.HTTP_200_OK
+
+
+    def test_if_list_subcategories_returns_update_at_descending_ordered_list(self, api_client):
+        subcategory = baker.make(SubCategory)   
+        response = api_client.get(f'/api/products/subcategories/?ordering=-update_at')
+
+        assert response.data['count'] > 0
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_if_bad_filtered_subcategories_returns_400(self, api_client):
+        response = api_client.get(f'/api/products/subcategories/?category=1') 
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    
 @pytest.mark.django_db
 class TestCreateSubCategory:
     
