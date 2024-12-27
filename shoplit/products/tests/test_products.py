@@ -15,7 +15,7 @@ def authenticate(api_client):
 @pytest.fixture
 def create_product(api_client):
     def do_create_product(product):
-        return api_client.post('api/products/', product)
+        return api_client.post('/api/products/', product)
     return do_create_product
 
 @pytest.mark.django_db
@@ -133,6 +133,70 @@ class TestListProducts:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
+@pytest.mark.django_db
+class TestCreateProduct:
+    def test_if_anomynous_create_product_return_403(self, create_product):
+        subcategory = baker.make(SubCategory)
+        response = create_product(
+            {
+                "name": "n",
+                "description": "n",
+                "price": 123,
+                "stock_quantity": 1,
+                "subcategory": subcategory.id
+            }
+        )
 
-    
-    
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_if_is_not_admin_return_403(self, authenticate, create_product):
+        authenticate()
+
+        response = create_product({'name': 'a'})
+
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_if_data_is_invalid_returns_400(self, authenticate, create_product):
+        authenticate(True)
+
+        response = create_product({'name': ''})
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.data['name'] is not None
+
+
+    def test_if_data_is_valid_returns_201(self, authenticate, create_product):
+        authenticate(is_staff=True)
+        subcategory = baker.make(SubCategory)
+        response = create_product(
+            {
+                "name": "n",
+                "description": "n",
+                "price": 123,
+                "stock_quantity": 1,
+                "subcategory": subcategory.id
+            }
+        )
+
+        assert response.status_code == status.HTTP_201_CREATED
+        assert response.data['id'] is not None
+
+    def test_if_product_created_with_valid_data_returns_expected_data(self, authenticate, create_product):
+        authenticate(is_staff=True)
+        subcategory = baker.make(SubCategory)
+        response = create_product(
+            {
+                "name": "n",
+                "description": "n",
+                "price": 123,
+                "stock_quantity": 1,
+                "subcategory": subcategory.id
+            }
+        )
+
+        assert response.data['name'] == 'n'
+        assert response.data['description'] == 'n'
+        assert response.data['price'] == 123
+        assert response.data['stock_quantity'] == 1
+        # assert response.data['subcategory']['id'] == subcategory.id
+
