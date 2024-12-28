@@ -320,5 +320,29 @@ class TestUpdateProduct:
         response = api_client.patch(f'/api/products/{product.id}/', {'name': 'update'})
         assert response.data['name'] == 'update'
 
+@pytest.mark.django_db
+class TestDeleteProduct:
+    def test_delete_product_returns_204(self, authenticate, api_client):
+        authenticate(is_staff=True)
+        product = baker.make(Product)
 
+        response = api_client.delete(f'/api/products/{product.id}/')
+
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    def test_if_delete_product_returns_403_for_non_staff(self, api_client, authenticate):
+        authenticate()
+        product = baker.make(Product)
+
+        response = api_client.delete(f'/api/products/{product.id}/')
+
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_if_delete_product_returns_404_for_non_existing_product(self, api_client, authenticate):
+        authenticate(is_staff=True)
+
+        response = api_client.delete(f'/api/products/1/')
+        
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.data['detail'] == 'Not found.'
 
