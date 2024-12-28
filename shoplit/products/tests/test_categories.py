@@ -163,3 +163,5 @@ class TestDeleteCategory:
         response = api_client.delete(f'/api/products/categories/wwwwwwwwwwww4ew/')
 
         assert response.status_code == status.HTTP_404_NOT_FOUND    
+
+    

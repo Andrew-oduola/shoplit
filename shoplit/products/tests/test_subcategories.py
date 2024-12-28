@@ -191,7 +191,7 @@ class TestUpdateSubCategory:
 
 @pytest.mark.django_db
 class TestDeleteSubCategory:
-    def test_if_delete_category_returns_204(self, api_client, authenticate):
+    def test_if_delete_subcategory_returns_204(self, api_client, authenticate):
         authenticate(is_staff=True)
         subcategory = baker.make(SubCategory)
 
@@ -200,12 +200,18 @@ class TestDeleteSubCategory:
         assert response.status_code == status.HTTP_204_NO_CONTENT  
 
 
-    def test_if_delete_category_returns_403_for_non_staff(self, api_client, authenticate):
+    def test_if_delete_subcategory_returns_403_for_non_staff(self, api_client, authenticate):
         authenticate()
         subcategory = baker.make(SubCategory)
 
         response = api_client.delete(f'/api/products/subcategories/{subcategory.id}/')
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_if_delete_subcategory_returns_404_for_non_existent_category(self, api_client, authenticate):
+        authenticate(is_staff=True)
+        response = api_client.delete(f'/api/products/subcategories/wwwwwwwwwwww4ew/')
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
 
         
