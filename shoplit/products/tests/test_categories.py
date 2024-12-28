@@ -156,3 +156,10 @@ class TestDeleteCategory:
         response = api_client.delete(f'/api/products/categories/{category.id}/')
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_if_delete_category_returns_404_for_non_existing_category(self, api_client, authenticate):
+        authenticate(is_staff=True)
+
+        response = api_client.delete(f'/api/products/categories/wwwwwwwwwwww4ew/')
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND    
