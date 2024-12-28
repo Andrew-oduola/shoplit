@@ -129,7 +129,14 @@ class TestUpdateCategory:
         
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
-    
+    def test_if_update_category_returns_expected_data(self, authenticate, api_client):
+        authenticate(is_staff=True)
+        category = baker.make(Category)
+
+        response = api_client.put(f'/api/products/categories/{category.id}/', {'name': 'update', 'description': 'desc'})
+
+        assert response.data['name'] == 'update'
+        assert response.data['description'] == 'desc'
 
 @pytest.mark.django_db
 class TestDeleteCategory:
