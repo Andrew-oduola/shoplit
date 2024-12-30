@@ -1,7 +1,11 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
+
 from django_filters.rest_framework import DjangoFilterBackend
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
 from .serializers import CategorySerializer, SubCategorySerializer, \
     ProductSerializer
 from .permissions import IsAdminUserOrReadOnly
@@ -28,6 +32,19 @@ class CategoryViewSet(ModelViewSet):
     search_fields = ['name','description']
     ordering_fields = ['name', 'updated_at']
 
+    # Cache the list view for 5 minutes
+    @method_decorator(cache_page(60 * 5))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    # Cache the retrieve view for 10 minutes
+    @method_decorator(cache_page(60 * 10))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+
+    
+
 class SubCategoryViewSet(ModelViewSet):
     """
     Handles operations for SubCategory model.
@@ -47,6 +64,16 @@ class SubCategoryViewSet(ModelViewSet):
     search_fields = ['name','description']
     ordering_fields = ['name', 'updated_at']
     filterset_fields = ['category']
+
+    # Cache the list view for 5 minutes
+    @method_decorator(cache_page(60 * 5))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    # Cache the retrieve view for 10 minutes
+    @method_decorator(cache_page(60 * 10))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 class ProductViewSet(ModelViewSet):
     """
@@ -69,34 +96,14 @@ class ProductViewSet(ModelViewSet):
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'updated_at']
 
+    # Cache the list view for 5 minutes
+    @method_decorator(cache_page(60 * 5))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    # Cache the retrieve view for 10 minutes
+    @method_decorator(cache_page(60 * 10))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
   
-
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from .models import Product
-
-class AdjustStockView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, pk):
-        try:
-            product = Product.objects.get(pk=pk)
-            quantity = int(request.data.get('quantity'))
-            adjustment_type = request.data.get('type', 'MANUAL').upper()
-
-            if adjustment_type == 'INCREASE':
-                product.increase_stock(quantity)
-            elif adjustment_type == 'DECREASE':
-                product.reduce_stock(quantity)
-            else:
-                return Response({"error": "Invalid adjustment type"}, status=status.HTTP_400_BAD_REQUEST)
-
-            return Response({"message": "Stock updated successfully"}, status=status.HTTP_200_OK)
-        except Product.DoesNotExist:
-            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
-        except ValueError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-

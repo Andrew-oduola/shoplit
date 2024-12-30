@@ -21,6 +21,11 @@ class EcommerceUser(HttpUser):
     categories_ids = []
     subcategories_ids = []
 
+    def __init__(self, parent):
+        super(EcommerceUser, self).__init__(parent)
+        self.token = ""
+        
+
     def on_start(self):
         # Pre-fectch the ids of the products to be used in the test
         response = self.client.get("/api/products")
@@ -147,26 +152,33 @@ class EcommerceUser(HttpUser):
         print(f"Response status code: {response.status_code}")
         # print(f"Response Text: {response.text}")
         
-        
+    @task(1)
+    def view_categories(self):
+        self.client.get("/api/products/categories", name="/api/categories")    
+    
+    @task(1)
+    def view_subcategories(self):
+        self.client.get("/api/products/subcategories", name="/api/subcategories")
 
-    @task(3)
-    def add_product_to_cart(self):
-        if self.products_ids:
-            product_id = random.choice(self.products_ids)
-            data = {
-                "product_id": product_id, 
-                "quantity": random.randint(1, 5)}
-            try:
-                response = self.client.post("/api/cart/items", 
-                                json=data, 
-                                name="/api/cart/items (add product)",
-                                headers=self.headers,
-                                auth=self.auth)
-                pprint(response.json())
-            except Exception as e:
-                pprint(e)
-        else:
-            print("No product IDs found")
+        
+    # @task(3)
+    # def add_product_to_cart(self):
+    #     if self.products_ids:
+    #         product_id = random.choice(self.products_ids)
+    #         data = {
+    #             "product_id": product_id, 
+    #             "quantity": random.randint(1, 5)}
+    #         try:
+    #             response = self.client.post("/api/cart/items", 
+    #                             json=data, 
+    #                             name="/api/cart/items (add product)",
+    #                             headers=self.headers,
+    #                             auth=self.auth)
+    #             pprint(response.json())
+    #         except Exception as e:
+    #             pprint(e)
+    #     else:
+    #         print("No product IDs found")
 
 
     # @task(2)
