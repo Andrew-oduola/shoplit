@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from products.models import Category, SubCategory, Product
 from products import utils
+
 class Command(BaseCommand):
     help = "create new set of categories, subcategories, and products"
 

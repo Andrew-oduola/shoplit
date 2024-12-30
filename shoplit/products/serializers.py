@@ -18,7 +18,7 @@ class SubCategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     average_rating = serializers.FloatField(read_only=True)
     review_count = serializers.FloatField(read_only=True)
-    category = serializers.StringRelatedField()
+    # category = serializers.StringRelatedField()
 
     class Meta:
         model = Product
