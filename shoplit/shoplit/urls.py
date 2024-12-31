@@ -20,8 +20,8 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', include('djoser.urls')),  # User registration and profile management
-    path('auth/', include('djoser.urls.jwt')),  # JWT authentication
+    re_path(r'^auth/', include('djoser.urls')),  # User registration and profile management
+    re_path(r'^auth/', include('djoser.urls.jwt')),  # JWT authentication
     path('api/', include('customuser.urls')),  # Custom user-related actions
     path('api/products/', include('products.urls')),  # Product and category management
     path('api/cart/', include('carts.urls')),  # Shopping cart management

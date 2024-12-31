@@ -27,8 +27,7 @@ class EcommerceUser(HttpUser):
         
 
     def on_start(self):
-        # Pre-fectch the ids of the products to be used in the test
-        response = self.client.get("/api/products")
+        
         
 
         login_response = self.client.post("/auth/jwt/create", {
@@ -39,6 +38,8 @@ class EcommerceUser(HttpUser):
         self.token = login_response.json()["access"]
         self.headers  = {"Authorization": f"JWT {self.token}", 'content-type': 'application/json'}
         self.auth = ('ayobamioduola13@gmail.com', 'secret')
+
+        print(f"Headers: {self.headers}")
 
         self.client.headers.update(self.headers)
 
@@ -52,6 +53,9 @@ class EcommerceUser(HttpUser):
         #     "Authorization": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM1NTkzNDUzLCJpYXQiOjE3MzU1MDcwNTMsImp0aSI6ImFlMDBkODlhYmZmMTRjYmRhMTczZDM3YTllMzMzZTMzIiwidXNlcl9pZCI6IjM2MDY4ZTQyLWZhNTktNDdmMS1iOWNhLWViMjU5YjE5MDcyYiJ9.IDX7b_NCY3YiJMhUGOOi0UDvDeLx1q3mrtsuUmyCHyM"
         # }
 
+        # Pre-fectch the ids of the products to be used in the test
+        response = self.client.get("/api/products")
+
         response_cart = self.client.get("/api/cart", 
                                         headers=self.headers,
                                         name="/api/cart",
@@ -62,7 +66,7 @@ class EcommerceUser(HttpUser):
         if response_cart.status_code == status.HTTP_200_OK:
             
             self.cart_id = cart_result.get('id')  # Extract cart ID if present
-            # print(f"Cart ID: {self.cart_id}")
+            print(f"Cart ID: {self.cart_id}")
         else:
             print("Failed to fetch cart")
             print(response_cart.status_code)
@@ -160,7 +164,7 @@ class EcommerceUser(HttpUser):
     def view_subcategories(self):
         self.client.get("/api/products/subcategories", name="/api/subcategories")
 
-        
+
     # @task(3)
     # def add_product_to_cart(self):
     #     if self.products_ids:
