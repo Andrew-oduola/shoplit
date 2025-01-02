@@ -39,27 +39,16 @@ class EcommerceUser(HttpUser):
         self.headers  = {"Authorization": f"JWT {self.token}", 'content-type': 'application/json'}
         self.auth = ('ayobamioduola13@gmail.com', 'secret')
 
-        print(f"Headers: {self.headers}")
 
         self.client.headers.update(self.headers)
 
-        # pprint(login_response.json())
-
-        # headers =  {
-        #     "Authorization": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM1NTkzNDUzLCJpYXQiOjE3MzU1MDcwNTMsImp0aSI6ImFlMDBkODlhYmZmMTRjYmRhMTczZDM3YTllMzMzZTMzIiwidXNlcl9pZCI6IjM2MDY4ZTQyLWZhNTktNDdmMS1iOWNhLWViMjU5YjE5MDcyYiJ9.IDX7b_NCY3YiJMhUGOOi0UDvDeLx1q3mrtsuUmyCHyM"
-        # }
-
-        # self.client.headers = {
-        #     "Authorization": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM1NTkzNDUzLCJpYXQiOjE3MzU1MDcwNTMsImp0aSI6ImFlMDBkODlhYmZmMTRjYmRhMTczZDM3YTllMzMzZTMzIiwidXNlcl9pZCI6IjM2MDY4ZTQyLWZhNTktNDdmMS1iOWNhLWViMjU5YjE5MDcyYiJ9.IDX7b_NCY3YiJMhUGOOi0UDvDeLx1q3mrtsuUmyCHyM"
-        # }
 
         # Pre-fectch the ids of the products to be used in the test
         response = self.client.get("/api/products")
 
-        response_cart = self.client.get("/api/cart", 
+        response_cart = self.client.get("/api/cart/", 
                                         headers=self.headers,
-                                        name="/api/cart",
-                                        auth=self.auth)
+                                        name="/api/cart",)
         cart_result = response_cart.json()
 
 
@@ -76,11 +65,13 @@ class EcommerceUser(HttpUser):
 
         data = response.json()
         if response.status_code == status.HTTP_200_OK:
-            self.products_ids = [product["id"] for product in data['results']]
+            self.products_ids = [product["id"].strip() for product in data['results']]
             self.categories_ids = [product["category"] for product in data['results']]
             self.subcategories_ids = [product["subcategory"] for product in data['results']]
         else:
             print("Failed to fetch products")
+
+        pprint(f"Products IDs: {self.products_ids}")
 
         
     
@@ -128,41 +119,27 @@ class EcommerceUser(HttpUser):
     @task(2)
     def add_product(self):
         data = {
-                "name": fake.word(),
+                "name": fake.name(),
                 "description": "n",
                 "price": 123,
                 "stock_quantity": 1,
                 "subcategory": random.choice(self.subcategories_ids)
             }
 
-        # try:
-        #     response = self.client.post("/api/products", 
-        #                     json=data, 
-        #                     name="/api/products (add product)",
-        #                     auth=self.auth, 
-        #                     headers=self.headers)
-        #     # pprint(response.json())
-        #     print(f"Response status code: {response.status_code}")
-        #     print(f"Response Text: {response.text}")
-        # except Exception as e:
-        #     pprint(f"Error:  {e}")
 
-        response = self.client.post("/api/products", 
+        response = self.client.post("/api/products/", 
                             json=data, 
                             name="/api/products (add product)",
-                            auth=self.auth, 
                             headers=self.headers)
-            # pprint(response.json())
-        print(f"Response status code: {response.status_code}")
-        # print(f"Response Text: {response.text}")
+       
         
     @task(1)
     def view_categories(self):
-        self.client.get("/api/products/categories", name="/api/categories")    
+        self.client.get("/api/products/categories", name="/api/categories/")    
     
     @task(1)
     def view_subcategories(self):
-        self.client.get("/api/products/subcategories", name="/api/subcategories")
+        self.client.get("/api/products/subcategories", name="/api/subcategories/")
 
 
     # @task(3)
@@ -172,15 +149,14 @@ class EcommerceUser(HttpUser):
     #         data = {
     #             "product_id": product_id, 
     #             "quantity": random.randint(1, 5)}
-    #         try:
-    #             response = self.client.post("/api/cart/items", 
-    #                             json=data, 
-    #                             name="/api/cart/items (add product)",
-    #                             headers=self.headers,
-    #                             auth=self.auth)
-    #             pprint(response.json())
-    #         except Exception as e:
-    #             pprint(e)
+           
+    #         response = self.client.post("/api/cart/items/", 
+    #                         json=data, 
+    #                         name="/api/cart/items (add product)",
+    #                         headers=self.headers)
+    #         pprint(response.json())
+    #         print(response.status_code)
+            
     #     else:
     #         print("No product IDs found")
 
@@ -205,6 +181,6 @@ class EcommerceUser(HttpUser):
     @task(3)
     def sort_products(self):
         sort_option = random.choice(["price", "-price", "updated_at", "-updated_at"])
-        self.client.get(f"/api/products?ordering={sort_option}", name="/api/products?ordering")
+        self.client.get(f"/api/products?ordering={sort_option}/", name="/api/products?ordering")
    
     

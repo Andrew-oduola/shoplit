@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'payments',
     'reviews',
     'recommendations',
+    'notifications',
 
     'rest_framework',
     'rest_framework_simplejwt',
