@@ -1,46 +1,3 @@
-# from django.shortcuts import render, get_object_or_404, redirect
-# from django.contrib import messages
-# from .models import Payment
-# from orders.models import Order
-
-# from django.http import JsonResponse
-# from carts.models import Cart
-
-# # Create your views here.
-# def verify_payment(request, ref):
-#     try:
-#         cart = Cart(request)
-#         payment = Payment.objects.get(ref=ref)
-#         verified = payment.verify_payment()
-
-#         if verified:
-#             last_order = Order.objects.latest('created_at')
-
-#             if last_order:
-#                 order = get_object_or_404(Order, pk=last_order.id)
-#                 order.paid = True
-#                 order.save()
-
-#                 order_info = {
-#                     'id': order.id,
-#                     'total_cost': order.total_cost
-#                 }
-
-#                 context = {
-#                     'placed_order': order_info,
-#                     'payment': payment
-#                 }
-#                 cart.clear()
-#                 return render()
-#             else:
-#                 return JsonResponse({"error message": "Order ID not found"})
-#         else:
-#             return redirect('/')
-#     except Payment.DoesNotExist:
-#         return JsonResponse({"error message": "Payment not found"})
-
-
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -54,6 +11,7 @@ from .models import Payment
 from .serializers import PaymentSerializer
 from .paystack import Paystack
 from orders.models import Order  # Import your Order model
+from notifications.models import Notifications
 
 class InitializePaymentView(APIView):
     """ 
@@ -116,9 +74,20 @@ class VerifyPaymentView(APIView):
             payment.order.status = 'PAID'
             payment.order.save()
 
+            # Create a notification
+            Notifications.objects.create(
+                title='Payment Successful',
+                message=f'Payment of {payment.amount} for order {payment.order.id} was successful',
+                user=request.user)
+
             return Response({"message": "Payment verified successfully!"}, status=status.HTTP_200_OK)
 
         payment.status = 'FAILED'
+        # Create a notification
+        Notifications.objects.create(
+            title='Payment Failed',
+            message=f'Your Payment Failed for order {payment.order.id}',
+            user=request.user)
         payment.save()
         return Response({"error": "Payment verification failed."}, status=status.HTTP_400_BAD_REQUEST)
 
