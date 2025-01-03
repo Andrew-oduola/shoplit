@@ -25,7 +25,7 @@ class NotificationsViewSet(ModelViewSet):
     
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = NotificationSerializer(queryset, many=True)
+        serializer = NoticationMiniSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
