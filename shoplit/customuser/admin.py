@@ -15,8 +15,9 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ("is_staff", "is_superuser", "is_active")
     search_fields = ("first_name", "last_name", "email")
     ordering = ('email', )
+    list_editable = ("is_staff", "first_name", "last_name")
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
+        (None, {"fields": ("email", )}),
         ("Personal Info", {
             "fields": ("first_name", "last_name", "image"),
         }),
