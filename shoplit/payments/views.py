@@ -12,6 +12,7 @@ from .serializers import PaymentSerializer
 from .paystack import Paystack
 from orders.models import Order  # Import your Order model
 from notifications.models import Notifications
+from notifications import twilio
 
 class InitializePaymentView(APIView):
     """ 
@@ -33,6 +34,7 @@ class InitializePaymentView(APIView):
         response = paystack.initialize_payment(email=request.user.email, amount=amount)
 
         if response['status']:
+            twilio.send_sms(to=+2349130116229, message=f"Your payment of {order.total_amount} has been initialized. Please click on the link to complete payment request: {response['data']['authorization_url']}")
             # Save payment record
             payment = Payment.objects.create(
                 user=request.user,
@@ -45,6 +47,8 @@ class InitializePaymentView(APIView):
                 "payment": serializer.data,
                 "payment_url": response['data']['authorization_url']
             }, status=status.HTTP_200_OK)
+        
+            
 
         return Response({"error": response['message']}, status=status.HTTP_400_BAD_REQUEST)
 
