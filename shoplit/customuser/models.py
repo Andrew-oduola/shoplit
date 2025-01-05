@@ -13,6 +13,7 @@ class CustomUser(AbstractUser):
     username = None
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(_("Email address"), unique=True)
+    phone_no = models.CharField(_("Phone number"), max_length=15, blank=True, null=True)
     image = models.ImageField(_("Profile Picture"), upload_to='users/profile_pictures/', null=True, blank=True)
 
     # The field to use in place of the username field
