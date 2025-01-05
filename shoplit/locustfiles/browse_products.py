@@ -27,9 +27,6 @@ class EcommerceUser(HttpUser):
         
 
     def on_start(self):
-        
-        
-
         login_response = self.client.post("/auth/jwt/create", {
         "email": "ayobamioduola13@gmail.com",
         "password": "secret",
@@ -39,9 +36,7 @@ class EcommerceUser(HttpUser):
         self.headers  = {"Authorization": f"JWT {self.token}", 'content-type': 'application/json'}
         self.auth = ('ayobamioduola13@gmail.com', 'secret')
 
-
         self.client.headers.update(self.headers)
-
 
         # Pre-fectch the ids of the products to be used in the test
         response = self.client.get("/api/products")
@@ -51,17 +46,15 @@ class EcommerceUser(HttpUser):
                                         name="/api/cart",)
         cart_result = response_cart.json()
 
-
         if response_cart.status_code == status.HTTP_200_OK:
             
             self.cart_id = cart_result.get('id')  # Extract cart ID if present
-            print(f"Cart ID: {self.cart_id}")
+            # print(f"Cart ID: {self.cart_id}")
         else:
             print("Failed to fetch cart")
             print(response_cart.status_code)
             # pprint(cart_result)
         # self.cart_id = cart_result['id']
-
 
         data = response.json()
         if response.status_code == status.HTTP_200_OK:
@@ -71,9 +64,8 @@ class EcommerceUser(HttpUser):
         else:
             print("Failed to fetch products")
 
-        pprint(f"Products IDs: {self.products_ids}")
+        # pprint(f"Products IDs: {self.products_ids}")
 
-        
     
     # create cart for user so it can be referenced later on
     
