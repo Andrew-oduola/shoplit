@@ -2,6 +2,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.filters import SearchFilter, OrderingFilter
+
 
 from .models import Notifications
 from .serializers import NotificationSerializer, NoticationMiniSerializer, NotificationCreateSerializer
@@ -11,6 +13,9 @@ class NotificationsViewSet(ModelViewSet):
     queryset = Notifications.objects.all()
     serializer_class = NoticationMiniSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['title', 'message']
+    ordering_fields = ['created_at', 'is_read']
 
     def create(self, request, *args, **kwargs):
         serializer = NotificationCreateSerializer(data=request.data)
@@ -24,7 +29,9 @@ class NotificationsViewSet(ModelViewSet):
         return Response(serializer.data)
     
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+        queryset = Notifications.objects.all()
+        if not request.user.is_staff:
+            queryset = queryset.filter(user=request.user)
         serializer = NoticationMiniSerializer(queryset, many=True)
         return Response(serializer.data)
 
