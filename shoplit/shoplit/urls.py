@@ -18,6 +18,9 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.views.generic import TemplateView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='products/index.html')),
@@ -32,6 +35,8 @@ urlpatterns = [
     path('api/payments/', include('payments.urls')), # Payments management
     path('api/reviews/', include('reviews.urls')), # Reviews management
     path('api/notifications/', include('notifications.urls')), # Notifications management
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
 
 # Add debug toolbar URLs in development

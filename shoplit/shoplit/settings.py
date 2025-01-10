@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'django_filters',
     "corsheaders",
     "django_q",
+    'drf_spectacular',
     
 ]
 
@@ -207,6 +208,7 @@ REST_FRAMEWORK = {
      'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 
@@ -246,4 +248,14 @@ Q_CLUSTER = {
             'max_attempts': 1,
         },
     }
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': "Shoplit API - Simplify Your Shop Setup",
+    'DESCRIPTION': (
+        "Shoplit API provides everything you need to set up and manage your online shop seamlessly. "
+        "From managing products to handling orders, our API makes e-commerce effortless and efficient."
+    ),
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
