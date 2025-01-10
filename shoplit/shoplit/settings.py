@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django_filters',
     "corsheaders",
+    "django_q",
     
 ]
 
@@ -218,4 +219,31 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
      }
+}
+
+Q_CLUSTER = {
+    'name': 'shoplit',
+    'workers': 8,
+    'recycle': 500,
+    'timeout': 60,
+    'compress': True,
+    'save_limit': 250,
+    'queue_limit': 500,
+    'cpu_affinity': 1,
+    'label': 'Django Q2',
+    'redis': {
+        'host': '127.0.0.1',
+        'port': 6379,
+        'db': 0, },
+    'ALT_CLUSTERS': {
+        'long': {
+            'timeout': 3000,
+            'retry': 3600,
+            'max_attempts': 2,
+        },
+        'short': {
+            'timeout': 10,
+            'max_attempts': 1,
+        },
+    }
 }
