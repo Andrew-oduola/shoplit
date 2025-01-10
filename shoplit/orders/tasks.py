@@ -5,7 +5,7 @@ from orders.models import Order
 
 def send_order_notification(user_id, order_id):
     # Create an in-app notification
-     try:
+    try:
         # Fetch order details if needed
         order = Order.objects.get(id=order_id)
 
