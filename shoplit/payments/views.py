@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
+
 import json
 
 from .models import Payment
@@ -22,6 +24,7 @@ class InitializePaymentView(APIView):
     POST /payments/initialize/{order_id}// -> Initialize Payment
     """
     permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     def post(self, request, order_id):
         try:
@@ -61,6 +64,7 @@ class VerifyPaymentView(APIView):
     POST /payments/verify/{payment ref}// -> Verify Payment
     """
     permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     def post(self, request, reference):
         try:
@@ -101,6 +105,7 @@ class VerifyPaymentView(APIView):
 
 class PaystackWebhookView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     def post(self, request):
         event = json.loads(request.body)

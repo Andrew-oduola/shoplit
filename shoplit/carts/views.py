@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 
 
 from .models import Cart, CartItem
@@ -25,6 +26,7 @@ class CartItemViewSet(ModelViewSet):
     """
     serializer_class = CartItemSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     def get_queryset(self):
         cart, _ = Cart.objects.get_or_create(user=self.request.user) # get the current cart or create a new one if it doesn't exist
@@ -65,6 +67,7 @@ class CartViewSet(ViewSet):
         - GET   /cart/total_price/        -> Returns the cart total price.
     """
     permission_classes = [IsAuthenticated]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
     
     def list(self, request):
         cart, _ = Cart.objects.get_or_create(user=request.user)

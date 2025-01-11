@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.decorators import method_decorator
@@ -31,6 +32,7 @@ class CategoryViewSet(ModelViewSet):
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['name','description']
     ordering_fields = ['name', 'updated_at']
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     # Cache the list view for 5 minutes
     @method_decorator(cache_page(60 * 5))
@@ -43,7 +45,7 @@ class CategoryViewSet(ModelViewSet):
         return super().retrieve(request, *args, **kwargs)
 
 
-    
+
 
 class SubCategoryViewSet(ModelViewSet):
     """
@@ -64,6 +66,7 @@ class SubCategoryViewSet(ModelViewSet):
     search_fields = ['name','description']
     ordering_fields = ['name', 'updated_at']
     filterset_fields = ['category']
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     # Cache the list view for 5 minutes
     @method_decorator(cache_page(60 * 5))
@@ -101,6 +104,7 @@ class ProductViewSet(ModelViewSet):
     filterset_class = ProductFilterSet
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'updated_at']
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     def get_serializer_class(self):
         """

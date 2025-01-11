@@ -1,5 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
-
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from .models import CustomUser, Vendor
 
 from .serializers import VendorSerializer
@@ -19,6 +19,7 @@ class VendorViewset(ModelViewSet):
     """
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     def get_queryset(self):
         """
