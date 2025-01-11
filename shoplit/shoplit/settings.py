@@ -14,7 +14,9 @@ from datetime import timedelta
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 # Load environment variables from .env file
 load_dotenv()
 
@@ -115,10 +117,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'shoplit',
-        'USER': 'postgres',  # Or your specific PostgreSQL user
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),  # Replace with the actual password
-        'HOST': '127.0.0.1',  # Use 'localhost' or the appropriate host
-        'PORT': '5432',  # Default PostgreSQL port
+        'USER': 'postgres',  
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),  
+        'HOST': '127.0.0.1',
+        'PORT': '5432',  
     }
 }
 
@@ -177,6 +179,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = os.path.join(STATIC_URL, 'static')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -184,10 +188,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'customuser.CustomUser'
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-]
+# CORS_ALLOWED_ORIGINS = [*]
+CORS_ALLOW_ALL_ORIGINS = True
 
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
@@ -259,3 +261,11 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+
+
+cloudinary.config(
+    cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key = os.getenv('CLOUDINARY_API_KEY'),
+    api_secret = os.getenv('CLOUDINARY_API_SECRET'),
+)
+DEFAULT_FILE_STORAGE =  'cloudinary_storage.storage.MediaCloudinaryStorage'

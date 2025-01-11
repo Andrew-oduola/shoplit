@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
 from .serializers import CategorySerializer, SubCategorySerializer, \
-    ProductSerializer
+    ProductSerializer, ProductCreateUpdateSerializer
 from .permissions import IsAdminUserOrReadOnly
 from .models import Category, SubCategory, Product
 from .filters import ProductFilterSet
@@ -75,6 +75,12 @@ class SubCategoryViewSet(ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
+
+class CustomPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class ProductViewSet(ModelViewSet):
     """
     Handles operations for Product model.
@@ -89,12 +95,20 @@ class ProductViewSet(ModelViewSet):
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    pagination_class = PageNumberPagination
+    pagination_class = CustomPagination
     permission_classes = [IsAdminUserOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilterSet
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'updated_at']
+
+    def get_serializer_class(self):
+        """
+        Returns a different serializer for the 'create' action.
+        """
+        if self.action in ['create', 'update', 'partial_update']:
+            return ProductCreateUpdateSerializer  # Serializer for creating a product
+        return super().get_serializer_class()
 
     # Cache the list view for 5 minutes
     @method_decorator(cache_page(60 * 5))

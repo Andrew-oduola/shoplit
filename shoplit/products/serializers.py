@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, SubCategory, Product
+from .models import Category, SubCategory, Product, ProductImage
 from carts.models import CartItem, Cart
 
 
@@ -14,8 +14,13 @@ class SubCategorySerializer(serializers.ModelSerializer):
         model = SubCategory
         fields = ['id', 'name', 'description', 'category']
 
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ['id', 'image']
 
 class ProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, read_only=True)  # Display images
     average_rating = serializers.FloatField(read_only=True)
     review_count = serializers.FloatField(read_only=True)
     # category = serializers.StringRelatedField()
@@ -31,7 +36,8 @@ class ProductSerializer(serializers.ModelSerializer):
             'category',  # Auto-populated based on the subcategory
             'subcategory',
             'average_rating',
-            'review_count'
+            'review_count',
+            'images'
         ]
         read_only_fields = ['category']
 
@@ -47,3 +53,22 @@ class ProductSerializer(serializers.ModelSerializer):
 
         validated_data['category'] = subcategory.category
         return super().create(validated_data)
+
+
+class ProductCreateUpdateSerializer(serializers.ModelSerializer):
+    images = serializers.ListField(
+        child=serializers.ImageField(), write_only=True, required=False
+    )
+
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'price', 'stock_quantity', 'subcategory', 'images']
+
+    def create(self, validated_data):
+        images = validated_data.pop('images', [])
+        product = Product.objects.create(**validated_data)
+
+        for image in images:
+            ProductImage.objects.create(product=product, image=image)
+
+        return product

@@ -1,6 +1,8 @@
 from django.db import models
 from customuser.models import Vendor
 import uuid
+from cloudinary.models import CloudinaryField
+
 
 
 # Represents a top-level category for classifying products
@@ -96,3 +98,10 @@ class Product(models.Model):
     def increase_stock(self, quantity):
         self.stock_quantity += quantity
         self.save()
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, related_name="images", on_delete=models.CASCADE)  # Establish one-to-many relationship
+    image = CloudinaryField('image')
+
+    def __str__(self):
+        return f"Image for {self.product.name}"
