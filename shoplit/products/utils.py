@@ -6,7 +6,7 @@ import os
 import django
 
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shoplit.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shoplit.settings.dev")
 django.setup()
 
 from products.models import Category, SubCategory, Product

@@ -9,7 +9,7 @@ from decimal import Decimal
 from faker import Faker
 
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shoplit.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shoplit.settings.dev")
 # load the Django apps registry
 django.setup()
 
