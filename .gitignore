@@ -76,7 +76,6 @@ docs/_build/
 *.rst
 
 # Heroku specific
-Procfile
 runtime.txt
 
 # Jupyter Notebook
