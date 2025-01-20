@@ -9,7 +9,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 REDIS_URL = os.environ.get('REDISCLOUD_URL')
-ALLOWED_HOSTS = ['shoplit-prod.herokuapp.com']
+ALLOWED_HOSTS = ['shoplit-prod.herokuapp.com', 'shoplit-prod-74e250e64c74.herokuapp.com']
 
 DATABASES = {
     'default': dj_database_url.config(default=DATABASE_URL)
