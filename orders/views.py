@@ -64,7 +64,7 @@ class OrderViewSet(ModelViewSet):
             serializer = self.get_serializer(order, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            logger.info(f"Order {order.id} updated successfully by user {request.user.username}.")
+            logger.info(f"Order: {order.id} updated successfully by user {request.user.username}.")
             return Response(serializer.data)
         
         except Exception as e:
