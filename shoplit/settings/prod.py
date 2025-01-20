@@ -5,10 +5,10 @@ import dj_database_url
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-SECRET_KEY = os.environ('SECRET_KEY')
-DATABASE_URL = os.environ('DATABASE_URL')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
-REDIS_URL = os.environ('REDISCLOUD_URL')
+REDIS_URL = os.environ.get('REDISCLOUD_URL')
 ALLOWED_HOSTS = ['shoplit-prod.herokuapp.com']
 
 DATABASES = {
@@ -50,7 +50,7 @@ Q_CLUSTER = {
     }
 }
 
-EMAIL_HOST = os.environ('MAILGUN_SMTP_SERVER')
-EMAIL_HOST_USER = os.environ('MAILGUN_SMTP_LOGIN')
-EMAIL_HOST_PASSWORD = os.environ('MAILGUN_SMTP_PASSWORD')
-EMAIL_PORT = os.environ('MAILGUN_SMTP_PORT')
+EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER')
+EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
+EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
+EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT')
