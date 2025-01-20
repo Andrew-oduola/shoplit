@@ -12,7 +12,7 @@ REDIS_URL = os.environ.get('REDISCLOUD_URL')
 ALLOWED_HOSTS = ['shoplit-prod.herokuapp.com']
 
 DATABASES = {
-    'default': dj_database_url.config(DATABASE_URL)
+    'default': dj_database_url.config(default=DATABASE_URL)
 }
 
 CACHES = {
