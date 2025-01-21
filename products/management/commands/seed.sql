@@ -1,5 +1,5 @@
--- Ensure the database is selected
-USE ecommerce_db;
+-- -- Ensure the database is selected
+-- USE ecommerce_db;
 
 -- Insert sample data into the Category table
 INSERT INTO category (id, name, description, created_at, updated_at)
