@@ -25,33 +25,33 @@ SELECT * FROM subcategory;
 -- Insert sample data into the Product table
 INSERT INTO product (id, name, description, price, stock_quantity, vendor_id, category_id, subcategory_id, is_active, created_at, updated_at)
 VALUES 
-    (UUID(), 'iPhone 14', 'Latest Apple smartphone', 999.99, 50, VENDOR_ID, 
+    (UUID(), 'iPhone 14', 'Latest Apple smartphone', 999.99, 50, '5c9d7918-7bfe-43d9-a696-56204fb1f850', 
         (SELECT id FROM category WHERE name = 'Electronics'), 
         (SELECT id FROM subcategory WHERE name = 'Mobile Phones'), 
         TRUE, NOW(), NOW()),
-    (UUID(), 'Dell XPS 13', 'Compact and powerful laptop', 1199.99, 30, VENDOR_ID, 
+    (UUID(), 'Dell XPS 13', 'Compact and powerful laptop', 1199.99, 30, '5c9d7918-7bfe-43d9-a696-56204fb1f850', 
         (SELECT id FROM category WHERE name = 'Electronics'), 
         (SELECT id FROM subcategory WHERE name = 'Laptops'), 
         TRUE, NOW(), NOW()),
-    (UUID(), 'Men\'s T-Shirt', '100% cotton casual wear', 19.99, 100, VENDOR_ID, 
+    (UUID(), 'Men\'s T-Shirt', '100% cotton casual wear', 19.99, 100, '5c9d7918-7bfe-43d9-a696-56204fb1f850', 
         (SELECT id FROM category WHERE name = 'Fashion'), 
         (SELECT id FROM subcategory WHERE name = 'Men\'s Wear'), 
         TRUE, NOW(), NOW()),
-    (UUID(), 'Blender Pro', 'High-performance kitchen blender', 49.99, 75, VENDOR_ID, 
+    (UUID(), 'Blender Pro', 'High-performance kitchen blender', 49.99, 75, '5c9d7918-7bfe-43d9-a696-56204fb1f850', 
         (SELECT id FROM category WHERE name = 'Home Appliances'), 
         (SELECT id FROM subcategory WHERE name = 'Kitchen Appliances'), 
         TRUE, NOW(), NOW());
 
--- Retrieve the IDs of the products for further use
-SELECT * FROM product;
+-- -- Retrieve the IDs of the products for further use
+-- SELECT * FROM product;
 
--- Insert sample data into the ProductImage table
-INSERT INTO productimage (id, product_id, image)
-VALUES 
-    (UUID(), (SELECT id FROM product WHERE name = 'iPhone 14'), 'https://res.cloudinary.com/example/image/upload/iphone14.jpg'),
-    (UUID(), (SELECT id FROM product WHERE name = 'Dell XPS 13'), 'https://res.cloudinary.com/example/image/upload/dell_xps13.jpg'),
-    (UUID(), (SELECT id FROM product WHERE name = 'Men\'s T-Shirt'), 'https://res.cloudinary.com/example/image/upload/mens_tshirt.jpg'),
-    (UUID(), (SELECT id FROM product WHERE name = 'Blender Pro'), 'https://res.cloudinary.com/example/image/upload/blender_pro.jpg');
+-- -- Insert sample data into the ProductImage table
+-- INSERT INTO productimage (id, product_id, image)
+-- VALUES 
+--     (UUID(), (SELECT id FROM product WHERE name = 'iPhone 14'), 'https://res.cloudinary.com/example/image/upload/iphone14.jpg'),
+--     (UUID(), (SELECT id FROM product WHERE name = 'Dell XPS 13'), 'https://res.cloudinary.com/example/image/upload/dell_xps13.jpg'),
+--     (UUID(), (SELECT id FROM product WHERE name = 'Men\'s T-Shirt'), 'https://res.cloudinary.com/example/image/upload/mens_tshirt.jpg'),
+--     (UUID(), (SELECT id FROM product WHERE name = 'Blender Pro'), 'https://res.cloudinary.com/example/image/upload/blender_pro.jpg');
 
--- Validate the inserted data
-SELECT * FROM productimage;
+-- -- Validate the inserted data
+-- SELECT * FROM productimage;
