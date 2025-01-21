@@ -2,44 +2,44 @@
 -- USE ecommerce_db;
 
 -- Insert sample data into the Category table
-INSERT INTO category (id, name, description, created_at, updated_at)
+INSERT INTO products_category (id, name, description, created_at, updated_at)
 VALUES 
     (UUID(), 'Electronics', 'Devices and gadgets', NOW(), NOW()),
     (UUID(), 'Fashion', 'Clothing and accessories', NOW(), NOW()),
     (UUID(), 'Home Appliances', 'Appliances for home use', NOW(), NOW());
 
 -- Retrieve the IDs of the categories for further use
-SELECT * FROM category;
+SELECT * FROM products_category;
 
 -- Insert sample data into the SubCategory table
-INSERT INTO subcategory (id, category_id, name, description, created_at, updated_at)
+INSERT INTO products_subcategory (id, category_id, name, description, created_at, updated_at)
 VALUES 
-    (UUID(), (SELECT id FROM category WHERE name = 'Electronics'), 'Mobile Phones', 'Smartphones and accessories', NOW(), NOW()),
-    (UUID(), (SELECT id FROM category WHERE name = 'Electronics'), 'Laptops', 'Portable computers', NOW(), NOW()),
-    (UUID(), (SELECT id FROM category WHERE name = 'Fashion'), 'Men\'s Wear', 'Clothing for men', NOW(), NOW()),
-    (UUID(), (SELECT id FROM category WHERE name = 'Home Appliances'), 'Kitchen Appliances', 'Appliances for the kitchen', NOW(), NOW());
+    (UUID(), (SELECT id FROM products_category WHERE name = 'Electronics'), 'Mobile Phones', 'Smartphones and accessories', NOW(), NOW()),
+    (UUID(), (SELECT id FROM products_category WHERE name = 'Electronics'), 'Laptops', 'Portable computers', NOW(), NOW()),
+    (UUID(), (SELECT id FROM products_category WHERE name = 'Fashion'), 'Men\'s Wear', 'Clothing for men', NOW(), NOW()),
+    (UUID(), (SELECT id FROM products_category WHERE name = 'Home Appliances'), 'Kitchen Appliances', 'Appliances for the kitchen', NOW(), NOW());
 
 -- Retrieve the IDs of the subcategories for further use
-SELECT * FROM subcategory;
+SELECT * FROM products_subcategory;
 
 -- Insert sample data into the Product table
-INSERT INTO product (id, name, description, price, stock_quantity, vendor_id, category_id, subcategory_id, is_active, created_at, updated_at)
+INSERT INTO products_product (id, name, description, price, stock_quantity, vendor_id, category_id, subcategory_id, is_active, created_at, updated_at)
 VALUES 
     (UUID(), 'iPhone 14', 'Latest Apple smartphone', 999.99, 50, '5c9d7918-7bfe-43d9-a696-56204fb1f850', 
-        (SELECT id FROM category WHERE name = 'Electronics'), 
-        (SELECT id FROM subcategory WHERE name = 'Mobile Phones'), 
+        (SELECT id FROM products_category WHERE name = 'Electronics'), 
+        (SELECT id FROM products_subcategory WHERE name = 'Mobile Phones'), 
         TRUE, NOW(), NOW()),
     (UUID(), 'Dell XPS 13', 'Compact and powerful laptop', 1199.99, 30, '5c9d7918-7bfe-43d9-a696-56204fb1f850', 
-        (SELECT id FROM category WHERE name = 'Electronics'), 
-        (SELECT id FROM subcategory WHERE name = 'Laptops'), 
+        (SELECT id FROM products_category WHERE name = 'Electronics'), 
+        (SELECT id FROM products_subcategory WHERE name = 'Laptops'), 
         TRUE, NOW(), NOW()),
     (UUID(), 'Men\'s T-Shirt', '100% cotton casual wear', 19.99, 100, '5c9d7918-7bfe-43d9-a696-56204fb1f850', 
-        (SELECT id FROM category WHERE name = 'Fashion'), 
-        (SELECT id FROM subcategory WHERE name = 'Men\'s Wear'), 
+        (SELECT id FROM products_category WHERE name = 'Fashion'), 
+        (SELECT id FROM products_subcategory WHERE name = 'Men\'s Wear'), 
         TRUE, NOW(), NOW()),
     (UUID(), 'Blender Pro', 'High-performance kitchen blender', 49.99, 75, '5c9d7918-7bfe-43d9-a696-56204fb1f850', 
-        (SELECT id FROM category WHERE name = 'Home Appliances'), 
-        (SELECT id FROM subcategory WHERE name = 'Kitchen Appliances'), 
+        (SELECT id FROM products_category WHERE name = 'Home Appliances'), 
+        (SELECT id FROM products_subcategory WHERE name = 'Kitchen Appliances'), 
         TRUE, NOW(), NOW());
 
 -- -- Retrieve the IDs of the products for further use
