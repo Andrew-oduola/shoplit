@@ -22,7 +22,7 @@ VALUES
 -- Retrieve the IDs of the subcategories for further use
 SELECT * FROM products_subcategory;
 
--- Insert sample data into the Product table exam
+-- Insert sample data into the Product table
 INSERT INTO products_product (id, name, description, price, stock_quantity, vendor_id, category_id, subcategory_id, is_active, created_at, updated_at)
 VALUES 
     (UUID(), 'iPhone 14', 'Latest Apple smartphone', 999.99, 50, '5c9d7918-7bfe-43d9-a696-56204fb1f850', 
