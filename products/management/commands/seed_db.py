@@ -15,3 +15,4 @@ class Command(BaseCommand):
 
         with connection.cursor() as cursor:
             cursor.execute(sql)
+        print('Done')
