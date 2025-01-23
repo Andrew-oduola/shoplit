@@ -2,7 +2,9 @@
 
 ## Overview
 The Shoplit API is a backend service for an e-commerce platform. It allows users to interact with product data, categories, and subcategories via RESTful endpoints. The API is built using Django and Django REST Framework (DRF).
+
 Deployed Version: https://shoplit-prod-74e250e64c74.herokuapp.com
+
 Api Documentation: https://shoplit-prod-74e250e64c74.herokuapp.com/swagger-ui/
 
 ## Features
