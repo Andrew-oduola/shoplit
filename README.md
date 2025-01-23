@@ -20,6 +20,8 @@ Api Documentation: https://shoplit-prod-74e250e64c74.herokuapp.com/swagger-ui/
 - **Product Details**: Retrieve detailed information for a specific product.
 - **Category & Subcategory Management**: Filter products by category or subcategory.
 - **Product Search**: Search for products by name or description.
+- **Product pagination and caching**: For faster performance
+
 
 ### Cart Management
 - **Add to Cart**: Add products to a shopping cart.
@@ -297,5 +299,4 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 ---
 
-Feel free to modify and expand this README to fit your project’s specific details and requirements.
 
