@@ -119,7 +119,7 @@ Response:
 ```json
 [
     {
-        "id": 1,
+        "id": "4e33465d-9845-4129-af1e-5d647fbf3b02",
         "name": "Product Name",
         "description": "Product description",
         "price": 29.99,
@@ -136,7 +136,7 @@ Response:
 Response:
 ```json
 {
-    "id": 1,
+    "id": "4e33465d-9845-4129-af1e-5d647fbf3b02",
     "name": "Product Name",
     "description": "Product description",
     "price": 29.99,
@@ -162,7 +162,7 @@ Request:
 Response:
 ```json
 {
-    "id": 2,
+    "id": "4e33465d-9845-4129-af1e-5d647fbf3b02",
     "name": "New Product",
     "description": "New product description",
     "price": 19.99,
@@ -186,7 +186,7 @@ Request:
 Response:
 ```json
 {
-    "id": 1,
+    "id": "4e33465d-9845-4129-af1e-5d647fbf3b02",
     "name": "Updated Product",
     "description": "Updated product description",
     "price": 24.99
@@ -210,7 +210,7 @@ Response:
 ```json
 [
     {
-        "id": 1,
+        "id": "4e33465d-9845-4129-af1e-5d647fbf3b02",
         "name": "Category Name",
         "description": "Category description"
     },
@@ -232,7 +232,7 @@ Request:
 Response:
 ```json
 {
-    "id": 2,
+    "id": "4e33465d-9845-4129-af1e-5d647fbf3b02",
     "name": "New Category",
     "description": "New category description"
 }
@@ -246,7 +246,7 @@ Response:
 ```json
 [
     {
-        "id": 1,
+        "id": "4e33465d-9845-4129-af1e-5d647fbf3b02",
         "name": "Subcategory Name",
         "category": "Category Name"
     },
