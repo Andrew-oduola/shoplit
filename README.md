@@ -2,12 +2,17 @@
 
 ## Overview
 The Shoplit API is a backend service for an e-commerce platform. It allows users to interact with product data, categories, and subcategories via RESTful endpoints. The API is built using Django and Django REST Framework (DRF).
+Deployed Version: https://shoplit-prod-74e250e64c74.herokuapp.com
+Api Documentation: https://shoplit-prod-74e250e64c74.herokuapp.com/swagger-ui/
 
 ## Features
 - Manage product categories and subcategories.
 - Create, read, update, and delete products.
 - Search and filter products.
-- User authentication and authorization (if applicable).
+- User authentication and authorization (token based JWT authentication).
+- Rate limiting to endpoints
+- Caching 
+
 
 ## Prerequisites
 To run the API locally, ensure you have the following installed:
@@ -15,12 +20,12 @@ To run the API locally, ensure you have the following installed:
 - Django
 - Django REST Framework
 - MySQL (or any database supported by Django)
-- Heroku CLI (if deploying to Heroku)
+- Use the requirements.txt file
 
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/shoplit.git
+   git clone https://github.com/Andrew-oduola/shoplit.git
    cd shoplit
    ```
 
@@ -54,6 +59,8 @@ To run the API locally, ensure you have the following installed:
    ```bash
    python manage.py runserver
    ```
+
+
 
 ## API Endpoints
 
