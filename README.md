@@ -8,12 +8,55 @@ Deployed Version: https://shoplit-prod-74e250e64c74.herokuapp.com
 Api Documentation: https://shoplit-prod-74e250e64c74.herokuapp.com/swagger-ui/
 
 ## Features
-- Manage product categories and subcategories.
-- Create, read, update, and delete products.
-- Search and filter products.
-- User authentication and authorization (token based JWT authentication).
-- Rate limiting to endpoints
-- Caching 
+
+### User Management
+- **User Registration**: Create user accounts.
+- **User Authentication**: Login/logout functionality with token-based authentication.
+- **Password Reset**: Reset forgotten passwords via email.
+- **User Profiles**: View and update user information.
+
+### Product Management
+- **Product Listings**: Fetch a list of all available products.
+- **Product Details**: Retrieve detailed information for a specific product.
+- **Category & Subcategory Management**: Filter products by category or subcategory.
+- **Product Search**: Search for products by name or description.
+
+### Cart Management
+- **Add to Cart**: Add products to a shopping cart.
+- **View Cart**: Retrieve items in the user’s cart.
+- **Update Cart**: Adjust quantities of products in the cart.
+- **Remove from Cart**: Delete items from the cart.
+
+### Order Management
+- **Place Orders**: Checkout and place orders for products in the cart.
+- **Order History**: View all orders placed by a user.
+- **Order Details**: Fetch detailed information about a specific order.
+
+### Payment Integration
+- **Payment Gateway**: Integration with paystack.
+- **Order Payment Status**: Update and track payment status of orders.
+
+
+### Wishlist
+- **Add to Wishlist**: Save products for later purchase.
+- **View Wishlist**: Fetch the user’s wishlist items.
+- **Remove from Wishlist**: Delete items from the wishlist.
+
+### Reviews and Ratings
+- **Product Reviews**: Allow users to leave reviews and ratings for products.
+- **Review Moderation**: Approve or reject reviews for public display.
+- **Review Display**: Fetch all reviews for a specific product.
+
+### Admin Features
+
+### Notifications
+- **Order Status Updates**: Notify users about order status changes via in app and SMS.
+- **Promotional Notifications**: Send updates about sales, discounts, or new arrivals.
+
+### SMS Notifications
+- **Order Updates**: Notify users via SMS about their order status (e.g., confirmed, shipped, delivered).
+- **Promotions**: Send promotional offers and updates directly to users' phones.
+
 
 
 ## Prerequisites
