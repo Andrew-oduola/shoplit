@@ -6,14 +6,21 @@ DEBUG = True
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-dd1#4676h=_0l^bp-3o48e@kw+tvs0)-x@*n2uty06%^bhfe61'
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'shoplit',
+#         'USER': 'postgres',  
+#         'PASSWORD': os.getenv('DATABASE_PASSWORD'),  
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',  
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'shoplit',
-        'USER': 'postgres',  
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),  
-        'HOST': '127.0.0.1',
-        'PORT': '5432',  
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',  # this creates db.sqlite3 in your project root
     }
 }
 
