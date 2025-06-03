@@ -17,13 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
+from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='products/index.html')),
+    path('', lambda request: redirect('swagger-ui', permanent=False)),  # Add this line
     path('admin/', admin.site.urls),
     re_path(r'^auth/', include('djoser.urls')),  # User registration and profile management
     re_path(r'^auth/', include('djoser.urls.jwt')),  # JWT authentication
