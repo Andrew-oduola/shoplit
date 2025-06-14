@@ -113,7 +113,7 @@ class VerifyPaymentView(APIView):
                 logger.error(f"Error updating payment/order status for reference {reference}: {e}")
                 return Response({"error": "Error updating payment/order status."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            # Create a notification
+            # Create a notification v
             try:
                 Notifications.objects.create(
                     title='Payment Successful',
