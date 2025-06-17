@@ -206,6 +206,11 @@ SPECTACULAR_SETTINGS = {
     'SERVERS': [
         {'url': 'https://shoplit.onrender.com', 'description': 'Live Server'},
     ],
+    'CONTACT': {
+        'name': 'Andrew Oduola A',
+        'email': 'ayobamioduola13@gmail.com',
+        'url': 'https://github.com/Andrew-oduola',
+    },
 }
 
 

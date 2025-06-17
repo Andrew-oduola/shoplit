@@ -15,21 +15,23 @@ from .permissions import IsAdminUserOrReadOnly
 from .models import Category, SubCategory, Product
 from .filters import ProductFilterSet
 
+from drf_spectacular.utils import extend_schema, extend_schema_view
+
 import logging
 
 logger = logging.getLogger(__name__)
-class CategoryViewSet(ModelViewSet):
-    """
-    Handles operations for Category model.
 
-    Endpoints:
-        - GET    /categories/        -> List all categories.
-        - POST   /categories/        -> Create a new category.
-        - GET    /categories/{id}/   -> Retrieve a specific category.
-        - PUT    /categories/{id}/   -> Update a specific category.
-        - PATCH  /categories/{id}/   -> Partially update a category.
-        - DELETE /categories/{id}/   -> Delete a category.
-    """
+
+@extend_schema_view(
+    list=extend_schema(summary="List categories", tags=["Category"]),
+    retrieve=extend_schema(summary="Retrieve a category", tags=["Category"]),
+    create=extend_schema(summary="Create category", tags=["Category"]),
+    update=extend_schema(summary="Update category", tags=["Category"]),
+    partial_update=extend_schema(summary="Partially update category", tags=["Category"]),
+    destroy=extend_schema(summary="Delete category", tags=["Category"]),
+)
+class CategoryViewSet(ModelViewSet):
+   
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAdminUserOrReadOnly]
@@ -109,17 +111,18 @@ class CategoryViewSet(ModelViewSet):
             raise APIException("An error occurred while deleting the category.")
 
 
+@extend_schema_view(
+    list=extend_schema(summary="List subcategories", tags=["SubCategory"]),
+    retrieve=extend_schema(summary="Retrieve a subcategory", tags=["SubCategory"]),
+    create=extend_schema(summary="Create subcategory", tags=["SubCategory"]),
+    update=extend_schema(summary="Update subcategory", tags=["SubCategory"]),
+    partial_update=extend_schema(summary="Partially update subcategory", tags=["SubCategory"]),
+    destroy=extend_schema(summary="Delete subcategory", tags=["SubCategory"]),
+)
 class SubCategoryViewSet(ModelViewSet):
     """
     Handles operations for SubCategory model.
 
-    Endpoints:
-        - GET    /subcategories/        -> List all subcategories.
-        - POST   /subcategories/        -> Create a new subcategory.
-        - GET    /subcategories/{id}/   -> Retrieve a specific subcategory.
-        - PUT    /subcategories/{id}/   -> Update a specific subcategory.
-        - PATCH  /subcategories/{id}/   -> Partially update a subcategory.
-        - DELETE /subcategories/{id}/   -> Delete a subcategory.
     """
     queryset = SubCategory.objects.all()
     serializer_class = SubCategorySerializer
@@ -204,17 +207,18 @@ class CustomPagination(PageNumberPagination):
     max_page_size = 100
 
 
+@extend_schema_view(
+    list=extend_schema(summary="List products", tags=["Product"]),
+    retrieve=extend_schema(summary="Retrieve a product", tags=["Product"]),
+    create=extend_schema(summary="Create product", tags=["Product"]),
+    update=extend_schema(summary="Update product", tags=["Product"]),
+    partial_update=extend_schema(summary="Partially update product", tags=["Product"]),
+    destroy=extend_schema(summary="Delete product", tags=["Product"]),
+)
 class ProductViewSet(ModelViewSet):
     """
     Handles operations for Product model.
 
-    Endpoints:
-        - GET    /products/        -> List all products.
-        - POST   /products/        -> Create a new product.
-        - GET    /products/{id}/   -> Retrieve a specific product.
-        - PUT    /products/{id}/   -> Update a specific product.
-        - PATCH  /products/{id}/   -> Partially update a product.
-        - DELETE /products/{id}/   -> Delete a product.
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
