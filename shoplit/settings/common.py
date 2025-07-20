@@ -204,7 +204,7 @@ SPECTACULAR_SETTINGS = {
     ],
     'CONTACT': {
         'name': 'Andrew Oduola A',
-        'email': 'ayobamioduola13@gmail.com',
+        'email': 'andrewoduola@gmail.com',
         'url': 'https://github.com/Andrew-oduola',
     },
 }
