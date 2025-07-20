@@ -218,7 +218,6 @@ class CustomPagination(PageNumberPagination):
 class ProductViewSet(ModelViewSet):
     """
     Handles operations for Product model.
-
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer

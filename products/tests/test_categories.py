@@ -7,6 +7,7 @@ from customuser.models import CustomUser
 from products.models import Category
 
 
+
 @pytest.fixture
 def authenticate(api_client):
     def do_authenticate(is_staff=False):
@@ -25,6 +26,7 @@ def create_category(api_client):
 class TestListCategories:
     def test_if_list_categories_returns_200(self, api_client):
         response = api_client.get('/api/products/categories/')
+        print(response.data)
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -34,19 +36,27 @@ class TestListCategories:
         assert response.data['count'] == 0
 
     def test_if_list_categories_returns_list(self, api_client):
-        category = baker.make(Category)   
+        category = baker.make(Category)
+        category2 = baker.make(Category)
 
         response = api_client.get('/api/products/categories/')
 
         assert response.data['count'] > 0
 
-    
+    def test_if_list_categories_returns_expected_data(self, api_client):
+        category = baker.make(Category)
+        category2 = baker.make(Category)
+
+        response = api_client.get('/api/products/categories/')
+
+        assert response.data['results'][0]['id'] == category.id
+        assert response.data['results'][1]['id'] == category2.id
 
 
 @pytest.mark.django_db
 class TestCreateCategory:
-    
-    def test_if_anomynous_create_category_return_403(self, create_category):
+
+    def test_if_anonymous_create_category_return_403(self, create_category):
         response = create_category({'name': 'a'})
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
