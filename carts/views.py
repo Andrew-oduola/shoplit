@@ -11,8 +11,42 @@ from .models import Cart, CartItem
 from products.models import Product
 from .serializers import CartItemSerializer, CartSerializer
 
+from drf_spectacular.utils import extend_schema, extend_schema_view
+
 logger = logging.getLogger(__name__)
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List all items in the user's cart",
+        description="Retrieve all items currently in the user's shopping cart.",
+        tags=["Cart"]
+    ),    
+    
+    create=extend_schema(
+        summary="Add a new item to the cart",
+        description="Add a new product to the user's shopping cart. If the product already exists in the cart, it updates the quantity.",
+        tags=["Cart"]
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve a specific cart item",
+        description="Get details of a specific item in the user's cart by its ID.",
+        tags=["Cart"]
+        ),
+    update=extend_schema(
+        summary="Update a specific cart item",
+        description="Update the quantity of a specific item in the user's cart.",
+        tags=["Cart"]
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a cart item",
+        description="Partially update the details of a specific item in the user's cart.",
+        tags=["Cart"]
+    ),
+    destroy=extend_schema(
+        summary="Delete a cart item",
+        description="Remove a specific item from the user's cart by its ID.",
+        tags=["Cart"])
+)
 class CartItemViewSet(ModelViewSet):
     """
     Handles operations for CartItem model.
@@ -80,6 +114,18 @@ class CartItemViewSet(ModelViewSet):
             raise APIException("An error occurred while removing the cart item.")
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="Retrieve the user's cart",
+        description="Get the current shopping cart for the authenticated user.",
+        tags=["Cart"]
+    ),
+    total_price=extend_schema(
+        summary="Get total price of the cart",
+        description="Calculate and return the total price of all items in the user's cart.",
+        tags=["Cart"]
+    )
+)
 class CartViewSet(ViewSet):
     """
     Handles operations for Cart model.

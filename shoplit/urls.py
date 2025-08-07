@@ -26,16 +26,16 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 urlpatterns = [
     path('', lambda request: redirect('swagger-ui', permanent=False)),  # Add this line
     path('admin/', admin.site.urls),
-    re_path(r'^auth/', include('djoser.urls')),  # User registration and profile management
-    re_path(r'^auth/', include('djoser.urls.jwt')),  # JWT authentication
-    path('api/', include('customuser.urls')),  # Custom user-related actions
-    path('api/products/', include('products.urls')),  # Product and category management
-    path('api/cart/', include('carts.urls')),  # Shopping cart management
-    path('api/orders/', include('orders.urls')), # Orders management
-    path('api/wishlist/', include('wishlist.urls')), # Wishlist management
-    path('api/payments/', include('payments.urls')), # Payments management
-    path('api/reviews/', include('reviews.urls')), # Reviews management
-    path('api/notifications/', include('notifications.urls')), # Notifications management
+    re_path(r'api/v1/^auth/', include('djoser.urls')),  # User registration and profile management
+    re_path(r'api/v1/^auth/', include('djoser.urls.jwt')),  # JWT authentication
+    path('api/v1/', include('customuser.urls')),  # Custom user-related actions
+    path('api/v1/products/', include('products.urls')),  # Product and category management
+    path('api/v1/cart/', include('carts.urls')),  # Shopping cart management
+    path('api/v1/orders/', include('orders.urls')), # Orders management
+    path('api/v1/wishlist/', include('wishlist.urls')), # Wishlist management
+    path('api/v1/payments/', include('payments.urls')), # Payments management
+    path('api/v1/reviews/', include('reviews.urls')), # Reviews management
+    path('api/v1/notifications/', include('notifications.urls')), # Notifications management
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]

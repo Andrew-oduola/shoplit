@@ -9,9 +9,50 @@ from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from .serializers import WishListSerializer
 from .models import WishList
 
+from drf_spectacular.utils import extend_schema, extend_schema_view
+
 # Initialize logger
 logger = logging.getLogger(__name__)
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List all wishlists or a user's wishlist",
+        description="Retrieve a list of all wishlists or filter by user.",
+        tags=['Wishlists']
+    ),
+    create=extend_schema(
+        summary="Create a new wishlist",
+        description="Submit a new wishlist for a user.",
+        request=WishListSerializer,
+        responses={status.HTTP_201_CREATED: WishListSerializer},
+        tags=['Wishlists']
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve a specific wishlist",
+        description="Get details of a specific wishlist by its ID.",
+        tags=['Wishlists']
+    ),
+    update=extend_schema(
+        summary="Update a specific wishlist",
+        description="Modify an existing wishlist by its ID.",
+        request=WishListSerializer,
+        responses={status.HTTP_200_OK: WishListSerializer},
+        tags=['Wishlists']
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a specific wishlist",
+        description="Partially modify an existing wishlist by its ID.",
+        request=WishListSerializer,
+        responses={status.HTTP_200_OK: WishListSerializer},
+        tags=['Wishlists']
+    ),
+    destroy=extend_schema(
+        summary="Delete a specific wishlist",
+        description="Remove a wishlist by its ID.",
+        responses={status.HTTP_204_NO_CONTENT: None},
+        tags=['Wishlists']
+    ),
+)
 class WishListViewSet(viewsets.ModelViewSet):
     """
     Handles the WishList Model

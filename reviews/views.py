@@ -8,9 +8,57 @@ from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from .models import Review
 from .serializers import ReviewSerializer
 
+from drf_spectacular.utils import extend_schema, extend_schema_view
+
 # Initialize logger
 logger = logging.getLogger(__name__)
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List all reviews or reviews for a specific product",
+        description="Retrieve a list of all reviews or filter by product ID.",
+        tags=['Reviews']
+    ),
+    create=extend_schema(
+        summary="Create a new review",
+        description="Submit a new review for a specific product.",
+        request=ReviewSerializer,
+        responses={status.HTTP_201_CREATED: ReviewSerializer},
+        tags=['Reviews']
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve a specific review",
+        description="Get details of a specific review by its ID.",
+        tags=['Reviews']
+    ),
+    update=extend_schema(
+        summary="Update a specific review",
+        description="Modify an existing review by its ID.",
+        request=ReviewSerializer,
+        responses={status.HTTP_200_OK: ReviewSerializer},
+        tags=['Reviews']
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a specific review",
+        description="Partially modify an existing review by its ID.",
+        request=ReviewSerializer,
+        responses={status.HTTP_200_OK: ReviewSerializer},
+        tags=['Reviews']
+    ),
+    destroy=extend_schema(
+        summary="Delete a specific review",
+        description="Remove a review by its ID.",
+        responses={status.HTTP_204_NO_CONTENT: None},
+        tags=['Reviews']
+    ),
+    patch=extend_schema(
+        summary="Partially update a specific review", 
+        description="Partially modify an existing review by its ID.",
+        request=ReviewSerializer,
+        responses={status.HTTP_200_OK: ReviewSerializer},
+        tags=['Reviews']
+    )
+)
 class ReviewViewSet(ModelViewSet):
     """
     Handles the review Model

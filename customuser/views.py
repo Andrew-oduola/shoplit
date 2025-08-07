@@ -7,9 +7,43 @@ from rest_framework import status
 from .models import Vendor
 from .serializers import VendorSerializer
 
+from drf_spectacular.utils import extend_schema, extend_schema_view
+
 # Configure logger
 logger = logging.getLogger(__name__)
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List all vendors",
+        description="Retrieve a list of all vendors. Admins can see all, while vendors see their own.",
+        tags=["Vendors"]
+    ),
+    create=extend_schema(
+        summary="Create a new vendor",
+        description="Create a new vendor profile linked to the authenticated user.",
+        tags=["Vendors"]
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve a specific vendor",
+        description="Get details of a specific vendor by its ID.",
+        tags=["Vendors"]
+    ),
+    update=extend_schema(
+        summary="Update a specific vendor",
+        description="Update the details of a specific vendor.",
+        tags=["Vendors"]
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a vendor",
+        description="Partially update the details of a specific vendor.",
+        tags=["Vendors"]
+    ),
+    destroy=extend_schema(
+        summary="Delete a vendor",
+        description="Delete a specific vendor. Admins can delete any vendor, while vendors can delete their own.",
+        tags=["Vendors"]
+    )
+)
 class VendorViewset(ModelViewSet):
     """
     Handles operations for Vendor model.

@@ -7,9 +7,44 @@ from rest_framework import status
 from .models import Order
 from .serializers import OrderSerializers
 
+from drf_spectacular.utils import extend_schema, extend_schema_view
+
 # Configure logger
 logger = logging.getLogger(__name__)
 
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="List all orders",
+        description="Retrieve a list of all orders made by the user.",
+        tags=["Orders"]
+    ),
+    create=extend_schema(
+        summary="Create a new order",
+        description="Create a new order for the user.",
+        tags=["Orders"]
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve a specific order",
+        description="Get details of a specific order by its ID.",
+        tags=["Orders"]
+    ),
+    update=extend_schema(
+        summary="Update a specific order",
+        description="Update the details of a specific order.",
+        tags=["Orders"]
+    ),
+    partial_update=extend_schema(
+        summary="Partially update an order",
+        description="Partially update the details of a specific order.",
+        tags=["Orders"]
+    ),
+    destroy=extend_schema(
+        summary="Delete an order",
+        description="Delete a specific order by its ID.",
+        tags=["Orders"]
+    )
+)
 class OrderViewSet(ModelViewSet):
     """
     Handles operations for the Order model.

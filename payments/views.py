@@ -13,9 +13,18 @@ from orders.models import Order  # Import your Order model
 from notifications.models import Notifications
 from notifications import twilio
 
+from drf_spectacular.utils import extend_schema, extend_schema_view
+
 # Configure logger
 logger = logging.getLogger(__name__)
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Handle Paystack webhook events",
+        description="Process Paystack webhook events for payment updates.",
+        tags=["Payments"]
+    )
+)
 class InitializePaymentView(APIView):
     """ 
     Initialize payment for an order.
@@ -75,6 +84,13 @@ class InitializePaymentView(APIView):
         return Response({"error": response['message']}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Verify payment for an order",
+        description="Verify the payment status using the payment reference.",
+        tags=["Payments"]
+    )
+)
 class VerifyPaymentView(APIView):
     """ 
     Verify payment for an order.
@@ -153,7 +169,13 @@ class VerifyPaymentView(APIView):
         payment.save()
         return Response({"error": "Payment verification failed."}, status=status.HTTP_400_BAD_REQUEST)
 
-
+@extend_schema_view(
+    post=extend_schema(
+        summary="Handle Paystack webhook events",
+        description="Process Paystack webhook events for payment updates.",
+        tags=["Payments"]
+    )
+)
 class PaystackWebhookView(APIView):
     permission_classes = [AllowAny]
     throttle_classes = [UserRateThrottle, AnonRateThrottle]
