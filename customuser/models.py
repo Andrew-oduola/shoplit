@@ -15,7 +15,8 @@ class CustomUser(AbstractUser):
     email = models.EmailField(_("Email address"), unique=True)
     phone_number = models.CharField(_("Phone number"), max_length=15, blank=True, null=True)
     image = models.ImageField(_("Profile Picture"), upload_to='users/profile_pictures/', null=True, blank=True)
-
+    date_of_birth = models.DateField(null=True, blank=True)
+    
     # The field to use in place of the username field
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [] 
