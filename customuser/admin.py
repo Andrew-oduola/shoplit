@@ -8,10 +8,10 @@ from .models import CustomUser, Vendor
 @admin.decorators.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
-    form = CustomUserCreationForm
+    form = CustomUserChangeForm
     model = CustomUser
 
-    list_display = ('email', "is_staff", "last_login", "first_name", "last_name")
+    list_display = ("email", "is_staff", "first_name", "last_name", "last_login")
     list_filter = ("is_staff", "is_superuser", "is_active")
     search_fields = ("first_name", "last_name", "email")
     ordering = ('email', )
@@ -19,10 +19,10 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {"fields": ("email", )}),
         ("Personal Info", {
-            "fields": ("first_name", "last_name", "image"),
+            "fields": ("first_name", "last_name", "image", "phone_number", "date_of_birth"),
         }),
         ("Permission", {
-            "classes": ("collapse",),
+            "classes": ("",),
             "fields": ("is_active", 
                        "is_staff", 
                        "is_superuser", 
@@ -30,7 +30,7 @@ class CustomUserAdmin(UserAdmin):
                        "user_permissions")
         }),
         ("Important Dates", {
-            "classes" : ("collapse", ),
+            "classes" : ("", ),
             "fields": ("last_login", 
                        "date_joined")
         })
