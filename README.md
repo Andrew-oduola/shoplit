@@ -7,6 +7,8 @@ Deployed Version: https://shoplit.onrender.com/
 
 [Database Schema](https://drawsql.app/teams/andrew-56/diagrams/ecommere-api)
 
+[Postman Collection](https://documenter.getpostman.com/view/40723571/2sB3QKrA2E)
+
 
 
 ## Features
