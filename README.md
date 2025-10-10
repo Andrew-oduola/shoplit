@@ -5,7 +5,7 @@ The Shoplit API is a backend service for an e-commerce platform. It allows users
 
 Deployed Version: https://shoplit.onrender.com/
 
-[Database Schema](https://drawsql.app/teams/andrew-56/diagrams/ecommere-api)
+[Database Schema](https://drawsql.app/teams/andrew-56/diagrams/ecommerce-api-andrew-oduola)
 
 [Postman Collection](https://documenter.getpostman.com/view/40723571/2sB3QKrA2E)
 
