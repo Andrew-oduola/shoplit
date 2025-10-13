@@ -68,7 +68,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_q",
     'drf_spectacular',
-    
 ]
 
 MIDDLEWARE = [
@@ -108,7 +107,6 @@ WSGI_APPLICATION = 'shoplit.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 
 
 INTERNAL_IPS = [
@@ -181,7 +179,7 @@ REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
-     'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',

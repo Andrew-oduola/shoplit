@@ -1,10 +1,13 @@
 from .common import *
+import sys
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-dd1#4676h=_0l^bp-3o48e@kw+tvs0)-x@*n2uty06%^bhfe61'
+
+
 
 # DATABASES = {
 #     'default': {
@@ -59,7 +62,7 @@ REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
-     'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -69,3 +72,6 @@ REST_FRAMEWORK = {
         'anon': None,
     }
 }
+
+if 'pytest' in sys.modules:
+    REST_FRAMEWORK['DEFAULT_THROTTLE_CLASSES'] = []
