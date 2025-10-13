@@ -2,18 +2,24 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
-from rest_framework.exceptions import APIException, ValidationError
+from rest_framework.exceptions import APIException, ValidationError, NotFound
+from rest_framework.response import Response
 
-from django.core.exceptions import ObjectDoesNotExist
+
+from django.core.exceptions import ObjectDoesNotExist, FieldError
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from django.http import Http404
+
 
 from .serializers import CategorySerializer, SubCategorySerializer, \
     ProductSerializer, ProductCreateUpdateSerializer
 from .permissions import IsAdminUserOrReadOnly
 from .models import Category, SubCategory, Product
 from .filters import ProductFilterSet
+
+from rest_framework import status
 
 from drf_spectacular.utils import extend_schema, extend_schema_view
 
@@ -31,14 +37,14 @@ logger = logging.getLogger(__name__)
     destroy=extend_schema(summary="Delete category", tags=["Category"]),
 )
 class CategoryViewSet(ModelViewSet):
-   
+
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAdminUserOrReadOnly]
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['name', 'description']
     ordering_fields = ['name', 'updated_at']
-    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    # throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     @method_decorator(cache_page(60 * 5))
     def list(self, request, *args, **kwargs):
@@ -55,17 +61,9 @@ class CategoryViewSet(ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         category_id = kwargs.get('pk')
         logger.info("User %s requested category details for ID %s.", request.user, category_id)
-        try:
-            response = super().retrieve(request, *args, **kwargs)
-            logger.debug("Retrieve response for ID %s: %s", category_id, response.data)
-            return response
-        except ObjectDoesNotExist:
-            logger.warning("Category with ID %s does not exist.", category_id)
-            raise APIException(f"Category with ID {category_id} not found.")
-        except Exception as e:
-            logger.error("Unexpected error while retrieving category ID %s: %s", category_id, str(e), exc_info=True)
-            raise APIException("An error occurred while retrieving the category.")
-
+        response = super().retrieve(request, *args, **kwargs)
+        logger.debug("Retrieve response for ID %s: %s", category_id, response.data)
+        return response
 
     def create(self, request, *args, **kwargs):
         logger.info("User %s is creating a new category.", request.user)
@@ -79,7 +77,6 @@ class CategoryViewSet(ModelViewSet):
         except Exception as e:
             logger.error("Unexpected error during category creation: %s", str(e), exc_info=True)
             raise APIException("An error occurred while creating the category.")
-
 
     def update(self, request, *args, **kwargs):
         category_id = kwargs.get('pk')
@@ -95,20 +92,12 @@ class CategoryViewSet(ModelViewSet):
             logger.error("Unexpected error during update for category ID %s: %s", category_id, str(e), exc_info=True)
             raise APIException("An error occurred while updating the category.")
 
-
     def destroy(self, request, *args, **kwargs):
         category_id = kwargs.get('pk')
         logger.warning("User %s is deleting category ID %s.", request.user, category_id)
-        try:
-            response = super().destroy(request, *args, **kwargs)
-            logger.info("Category ID %s deleted successfully.", category_id)
-            return response
-        except ObjectDoesNotExist:
-            logger.warning("Category ID %s not found for deletion.", category_id)
-            raise APIException(f"Category with ID {category_id} not found.")
-        except Exception as e:
-            logger.error("Unexpected error while deleting category ID %s: %s", category_id, str(e), exc_info=True)
-            raise APIException("An error occurred while deleting the category.")
+        response = super().destroy(request, *args, **kwargs)
+        logger.info("Category ID %s deleted successfully.", category_id)
+        return response
 
 
 @extend_schema_view(
@@ -131,7 +120,7 @@ class SubCategoryViewSet(ModelViewSet):
     search_fields = ['name','description']
     ordering_fields = ['name', 'updated_at']
     filterset_fields = ['category']
-    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    # throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     @method_decorator(cache_page(60 * 5))
     def list(self, request, *args, **kwargs):
@@ -140,6 +129,12 @@ class SubCategoryViewSet(ModelViewSet):
             response = super().list(request, *args, **kwargs)
             logger.debug("List response: %s", response.data)
             return response
+        except ValidationError as ve:
+            logger.warning("Validation error while filtering subcategories: %s", ve.detail)
+            raise  # automatically returns 400
+        except ValueError as ve:
+            logger.warning("Invalid filter parameter: %s", str(ve))
+            raise ValidationError({"detail": "Invalid filter parameter."})
         except Exception as e:
             logger.error("Unexpected error in list view: %s", str(e), exc_info=True)
             raise APIException("An error occurred while fetching the subcategory list.")
@@ -148,16 +143,9 @@ class SubCategoryViewSet(ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         subcategory_id = kwargs.get('pk')
         logger.info("User %s requested subcategory details for ID %s.", request.user, subcategory_id)
-        try:
-            response = super().retrieve(request, *args, **kwargs)
-            logger.debug("Retrieve response for ID %s: %s", subcategory_id, response.data)
-            return response
-        except ObjectDoesNotExist:
-            logger.warning("SubCategory with ID %s does not exist.", subcategory_id)
-            raise APIException(f"SubCategory with ID {subcategory_id} not found.")
-        except Exception as e:
-            logger.error("Unexpected error while retrieving subcategory ID %s: %s", subcategory_id, str(e), exc_info=True)
-            raise APIException("An error occurred while retrieving the subcategory.")
+        response = super().retrieve(request, *args, **kwargs)
+        logger.debug("Retrieve response for ID %s: %s", subcategory_id, response.data)
+        return response
 
     def create(self, request, *args, **kwargs):
         logger.info("User %s is creating a new subcategory.", request.user)
@@ -193,11 +181,17 @@ class SubCategoryViewSet(ModelViewSet):
             response = super().destroy(request, *args, **kwargs)
             logger.info("SubCategory ID %s deleted successfully.", subcategory_id)
             return response
+        except Http404:
+            logger.warning("SubCategory ID %s not found for deletion.", subcategory_id)
+            raise NotFound(f"SubCategory with ID {subcategory_id} not found.")
         except ObjectDoesNotExist:
             logger.warning("SubCategory ID %s not found for deletion.", subcategory_id)
-            raise APIException(f"SubCategory with ID {subcategory_id} not found.")
+            raise NotFound(f"SubCategory with ID {subcategory_id} not found.")
         except Exception as e:
-            logger.error("Unexpected error while deleting subcategory ID %s: %s", subcategory_id, str(e), exc_info=True)
+            logger.error(
+                "Unexpected error while deleting subcategory ID %s: %s",
+                subcategory_id, str(e), exc_info=True
+            )
             raise APIException("An error occurred while deleting the subcategory.")
 
 
@@ -227,7 +221,7 @@ class ProductViewSet(ModelViewSet):
     filterset_class = ProductFilterSet
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'updated_at']
-    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    # throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     def get_serializer_class(self):
         """
@@ -244,24 +238,24 @@ class ProductViewSet(ModelViewSet):
             response = super().list(request, *args, **kwargs)
             logger.debug("List response: %s", response.data)
             return response
+        except (ValidationError, FieldError) as e:
+            # Raised when filters or query parameters are invalid
+            logger.warning("Invalid filter or query parameter: %s", str(e))
+            return Response(
+                {"detail": "Invalid filter or query parameter."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         except Exception as e:
             logger.error("Unexpected error in list view: %s", str(e), exc_info=True)
-            raise APIException("An error occurred while fetching the product list.")
+            raise APIException("An unexpected error occurred while fetching the product list.")
 
     @method_decorator(cache_page(60 * 10))
     def retrieve(self, request, *args, **kwargs):
         product_id = kwargs.get('pk')
         logger.info("User %s requested product details for ID %s.", request.user, product_id)
-        try:
-            response = super().retrieve(request, *args, **kwargs)
-            logger.debug("Retrieve response for ID %s: %s", product_id, response.data)
-            return response
-        except ObjectDoesNotExist:
-            logger.warning("Product with ID %s does not exist.", product_id)
-            raise APIException(f"Product with ID {product_id} not found.")
-        except Exception as e:
-            logger.error("Unexpected error while retrieving product ID %s: %s", product_id, str(e), exc_info=True)
-            raise APIException("An error occurred while retrieving the product.")
+        response = super().retrieve(request, *args, **kwargs)
+        logger.debug("Retrieve response for ID %s: %s", product_id, response.data)
+        return response
 
     def create(self, request, *args, **kwargs):
         logger.info("User %s is creating a new product.", request.user)
@@ -293,15 +287,8 @@ class ProductViewSet(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         product_id = kwargs.get('pk')
         logger.warning("User %s is deleting product ID %s.", request.user, product_id)
-        try:
-            response = super().destroy(request, *args, **kwargs)
-            logger.info("Product ID %s deleted successfully.", product_id)
-            return response
-        except ObjectDoesNotExist:
-            logger.warning("Product ID %s not found for deletion.", product_id)
-            raise APIException(f"Product with ID {product_id} not found.")
-        except Exception as e:
-            logger.error("Unexpected error while deleting product ID %s: %s", product_id, str(e), exc_info=True)
-            raise APIException("An error occurred while deleting the product.")
+        response = super().destroy(request, *args, **kwargs)
+        logger.info("Product ID %s deleted successfully.", product_id)
+        return response
 
   
