@@ -17,19 +17,19 @@ def authenticate(api_client):
 @pytest.fixture
 def create_subcategory(api_client):
     def do_create_subcategory(subcategory):
-        return api_client.post('/api/products/subcategories/', subcategory)
+        return api_client.post('/api/v1/products/subcategories/', subcategory)
     return do_create_subcategory
 
 
 @pytest.mark.django_db
 class TestListSubCategories:
     def test_if_list_subcategories_returns_200(self, api_client):
-        response = api_client.get('/api/products/subcategories/')
+        response = api_client.get('/api/v1/products/subcategories/')
 
         assert response.status_code == status.HTTP_200_OK
 
     def test_if_list_subcategories_returns_empty_list(self, api_client):
-        response = api_client.get('/api/products/subcategories/')
+        response = api_client.get('/api/v1/products/subcategories/')
 
         assert response.data['count'] == 0
         assert response.status_code == status.HTTP_200_OK
@@ -37,42 +37,42 @@ class TestListSubCategories:
     def test_if_list_subcategories_returns_list(self, api_client):
         subcategory = baker.make(SubCategory)   
 
-        response = api_client.get('/api/products/subcategories/')
+        response = api_client.get('/api/v1/products/subcategories/')
 
         assert response.data['count'] > 0
         assert response.status_code == status.HTTP_200_OK
 
     def test_if_list_subcategories_returns_filtered_list(self, api_client):
         subcategory = baker.make(SubCategory)   
-        response = api_client.get(f'/api/products/subcategories/?category={subcategory.category.id}')
+        response = api_client.get(f'/api/v1/products/subcategories/?category={subcategory.category.id}')
 
         assert response.data['count'] > 0
         assert response.status_code == status.HTTP_200_OK
 
     def test_if_list_subcategories_returns_searched_list(self, api_client):
         subcategory = baker.make(SubCategory)   
-        response = api_client.get(f'/api/products/subcategories/?search={subcategory.name}')
+        response = api_client.get(f'/api/v1/products/subcategories/?search={subcategory.name}')
 
         assert response.data['count'] > 0
         assert response.status_code == status.HTTP_200_OK
 
     def test_if_list_subcategories_returns_name_assending_ordered_list(self, api_client):
         subcategory = baker.make(SubCategory)   
-        response = api_client.get(f'/api/products/subcategories/?ordering=name')
+        response = api_client.get(f'/api/v1/products/subcategories/?ordering=name')
 
         assert response.data['count'] > 0
         assert response.status_code == status.HTTP_200_OK
 
     def test_if_list_subcategories_returns_name_descending_ordered_list(self, api_client):
         subcategory = baker.make(SubCategory)   
-        response = api_client.get(f'/api/products/subcategories/?ordering=-name')
+        response = api_client.get(f'/api/v1/products/subcategories/?ordering=-name')
 
         assert response.data['count'] > 0
         assert response.status_code == status.HTTP_200_OK
 
     def test_if_list_subcategories_returns_update_at_assending_ordered_list(self, api_client):
         subcategory = baker.make(SubCategory)   
-        response = api_client.get(f'/api/products/subcategories/?ordering=update_at')
+        response = api_client.get(f'/api/v1/products/subcategories/?ordering=update_at')
 
         assert response.data['count'] > 0
         assert response.status_code == status.HTTP_200_OK
@@ -80,26 +80,24 @@ class TestListSubCategories:
 
     def test_if_list_subcategories_returns_update_at_descending_ordered_list(self, api_client):
         subcategory = baker.make(SubCategory)   
-        response = api_client.get(f'/api/products/subcategories/?ordering=-update_at')
+        response = api_client.get(f'/api/v1/products/subcategories/?ordering=-update_at')
 
         assert response.data['count'] > 0
         assert response.status_code == status.HTTP_200_OK
 
     def test_if_bad_filtered_subcategories_returns_400(self, api_client):
-        response = api_client.get(f'/api/products/subcategories/?category=1') 
+        response = api_client.get(f'/api/v1/products/subcategories/?category=1') 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    
+
 @pytest.mark.django_db
 class TestCreateSubCategory:
-    
     def test_if_anomynous_create_subcategory_return_403(self, create_subcategory):
         category = baker.make(Category)
         response = create_subcategory({"name": "n", "description": "n", "category": category.id})
 
-        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    
     def test_if_is_not_admin_create_subcategory_return_403(self, authenticate, create_subcategory):
         authenticate()
         category = baker.make(Category)
@@ -108,7 +106,6 @@ class TestCreateSubCategory:
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
-    
     def test_if_data_is_invalid_create_subcategory_returns_400(self, authenticate, create_subcategory):
         authenticate(True)
 
@@ -116,7 +113,6 @@ class TestCreateSubCategory:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data['name'] is not None
-
 
     def test_if_create_subcategory_data_is_valid_returns_201(self, authenticate, create_subcategory):
         authenticate(is_staff=True)
@@ -143,18 +139,19 @@ class TestCreateSubCategory:
         # assert response.description == 'desc'
         # assert response.category == category
 
+
 @pytest.mark.django_db
 class TestRetrieveSubCategory:
     def test_if_subcategory_exist_returns_200(self, api_client):
         subcategory = baker.make(SubCategory)
 
-        response = api_client.get(f'/api/products/subcategories/{subcategory.id}/')
+        response = api_client.get(f'/api/v1/products/subcategories/{subcategory.id}/')
 
         assert response.status_code == status.HTTP_200_OK
 
 
     def test_if_subcategory_did_not_exist_returns_404(self, api_client):
-        response = api_client.get(f'/api/products/subcategories/wwwwwwwwwwww4ew/')
+        response = api_client.get(f'/api/v1/products/subcategories/3fa85f64-5717-4562-b3fc-2c963f66afa6/')
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
@@ -162,11 +159,12 @@ class TestRetrieveSubCategory:
     def test_if_subcategory_exist_returns_expected_data(self, api_client):
         subcategory = baker.make(SubCategory)
 
-        response = api_client.get(f'/api/products/subcategories/{subcategory.id}/')
+        response = api_client.get(f'/api/v1/products/subcategories/{subcategory.id}/')
 
         assert response.data['name'] == subcategory.name
         assert response.data['description'] == subcategory.description
         assert response.data['category'] == subcategory.category.id
+
 
 @pytest.mark.django_db
 class TestUpdateSubCategory:
@@ -174,7 +172,7 @@ class TestUpdateSubCategory:
         authenticate(is_staff=True)
         subcategory = baker.make(SubCategory)
 
-        response = api_client.put(f'/api/products/subcategories/{subcategory.id}/', {'name': 'n', 'description': 'Description', 'category': subcategory.category.id})
+        response = api_client.put(f'/api/v1/products/subcategories/{subcategory.id}/', {'name': 'n', 'description': 'Description', 'category': subcategory.category.id})
 
         assert response.status_code == status.HTTP_200_OK     
 
@@ -183,7 +181,7 @@ class TestUpdateSubCategory:
         authenticate()
         subcategory = baker.make(SubCategory)
 
-        response = api_client.put(f'/api/products/subcategories/{subcategory.id}/', {'name': 'update', 'description': 'desc', 'category': subcategory.category.id})
+        response = api_client.put(f'/api/v1/products/subcategories/{subcategory.id}/', {'name': 'update', 'description': 'desc', 'category': subcategory.category.id})
         
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -195,7 +193,7 @@ class TestDeleteSubCategory:
         authenticate(is_staff=True)
         subcategory = baker.make(SubCategory)
 
-        response = api_client.delete(f'/api/products/subcategories/{subcategory.id}/')
+        response = api_client.delete(f'/api/v1/products/subcategories/{subcategory.id}/')
 
         assert response.status_code == status.HTTP_204_NO_CONTENT  
 
@@ -204,13 +202,13 @@ class TestDeleteSubCategory:
         authenticate()
         subcategory = baker.make(SubCategory)
 
-        response = api_client.delete(f'/api/products/subcategories/{subcategory.id}/')
+        response = api_client.delete(f'/api/v1/products/subcategories/{subcategory.id}/')
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_if_delete_subcategory_returns_404_for_non_existent_category(self, api_client, authenticate):
         authenticate(is_staff=True)
-        response = api_client.delete(f'/api/products/subcategories/wwwwwwwwwwww4ew/')
+        response = api_client.delete(f'/api/v1/products/subcategories/3fa85f64-5717-4562-b3fc-2c963f66afa6/')
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 

@@ -7,41 +7,43 @@ import pytest
 from model_bakery import baker
 from decimal import Decimal
 
+
 @pytest.fixture
 def authenticate(api_client):
     def do_authenticate(is_staff=False):
         return api_client.force_authenticate(user=CustomUser(is_staff=is_staff))
     return do_authenticate
 
+
 @pytest.fixture
 def create_product(api_client):
     def do_create_product(product):
-        return api_client.post('/api/products/', product)
+        return api_client.post('/api/v1/products/', product)
     return do_create_product
 
 @pytest.mark.django_db
 class TestListProducts:
     def test_if_list_products_returns_200(self, api_client):
-        response = api_client.get('/api/products/')
+        response = api_client.get('/api/v1/products/')
 
         assert response.status_code == status.HTTP_200_OK
 
     def test_if_list_products_returns_empty_list(self, api_client):
-        response = api_client.get('/api/products/')
+        response = api_client.get('/api/v1/products/')
 
         assert response.data['count'] == 0
 
     def test_if_list_products_returns_list(self, api_client):
         subcategory = baker.make(Product)   
 
-        response = api_client.get('/api/products/')
+        response = api_client.get('/api/v1/products/')
 
         assert response.data['count'] > 0
 
     def test_if_list_products__category_returns_filtered_list(self, api_client):
         category = baker.make(Category)
         product = baker.make(Product, category=category)   
-        response = api_client.get(f'/api/products/?category={product.category.id}')
+        response = api_client.get(f'/api/v1/products/?category={product.category.id}')
 
         assert response.data['count'] > 0
 
@@ -50,89 +52,82 @@ class TestListProducts:
         category = baker.make(Category)
         subcategory = baker.make(SubCategory, category=category)
         product = baker.make(Product, subcategory=subcategory, category=category)   
-        response = api_client.get(f'/api/products/?subcategory={product.subcategory.id}')
+        response = api_client.get(f'/api/v1/products/?subcategory={product.subcategory.id}')
 
         assert response.data['count'] > 0
-
 
     def test_if_list_products_price_equals_returns_filtered_list(self, api_client):
         product = baker.make(Product, price=100)   
-        response = api_client.get(f'/api/products/?price={product.price}')
+        response = api_client.get(f'/api/v1/products/?price={product.price}')
 
         assert response.data['count'] > 0
-
 
     def test_if_list_products_price_gte_returns_filtered_list(self, api_client):
         product = baker.make(Product, price=100)  
-        response = api_client.get(f'/api/products/?price__gte={product.price}')
+        response = api_client.get(f'/api/v1/products/?price__gte={product.price}')
 
         assert response.data['count'] > 0
-
 
     def test_if_list_products_price_lte_returns_filtered_list(self, api_client):
         product = baker.make(Product, price=100)   
-        response = api_client.get(f'/api/products/?price__lte={product.price}')
+        response = api_client.get(f'/api/v1/products/?price__lte={product.price}')
 
         assert response.data['count'] > 0
-
 
     def test_if_list_products_price_lte_and_gte_returns_filtered_list(self, api_client):
         product = baker.make(Product, price=100)
         product2 = baker.make(Product, price=200)   
-        response = api_client.get(f'/api/products/?price__lte={product2.price}&price__gte={product.price}')
+        response = api_client.get(f'/api/v1/products/?price__lte={product2.price}&price__gte={product.price}')
 
         assert response.data['count'] > 0
-
 
     def test_if_list_products_name_contains_returns_filtered_list(self, api_client):
         product = baker.make(Product, name="name")  
-        response = api_client.get(f'/api/products/?name={product.name}')
+        response = api_client.get(f'/api/v1/products/?name={product.name}')
 
         assert response.data['count'] > 0
-
 
     def test_if_list_products_description_contains_returns_filtered_list(self, api_client):
         product = baker.make(Product, description="description")
-        response = api_client.get(f'/api/products/?description__icontains={product.description}')
+        response = api_client.get(f'/api/v1/products/?description__icontains={product.description}')
 
         assert response.data['count'] > 0
 
-
     def test_if_list_products_returns_search_list(self, api_client):
         product = baker.make(Product, name="name")   
-        response = api_client.get(f'/api/products/?search={product.name[:3]}')
+        response = api_client.get(f'/api/v1/products/?search={product.name[:3]}')
 
         assert response.data['count'] > 0
 
     def test_if_list_products_returns_price_accending_ordered_list(self, api_client):
         product = baker.make(Product, name="name")   
-        response = api_client.get(f'/api/products/?ordering=price')
+        response = api_client.get(f'/api/v1/products/?ordering=price')
 
         assert response.data['count'] > 0
 
     def test_if_list_products_returns_price_descending_ordered_list(self, api_client):
         product = baker.make(Product, name="name")   
-        response = api_client.get(f'/api/products/?ordering=-price')
+        response = api_client.get(f'/api/v1/products/?ordering=-price')
 
         assert response.data['count'] > 0
 
     def test_if_list_products_returns_updated_at_accending_ordered_list(self, api_client):
         product = baker.make(Product, name="name")   
-        response = api_client.get(f'/api/products/?ordering=updated_at')
+        response = api_client.get(f'/api/v1/products/?ordering=updated_at')
 
         assert response.data['count'] > 0
 
-    
     def test_if_list_products_returns_updated_at_descending_ordered_list(self, api_client):
         product = baker.make(Product, name="name")   
-        response = api_client.get(f'/api/products/?ordering=-updated_at')
+        response = api_client.get(f'/api/v1/products/?ordering=-updated_at')
 
         assert response.data['count'] > 0
 
     def test_if_bad_filtered_products_returns_400(self, api_client):
-        response = api_client.get(f'/api/products/?category_id=1')
+        response = api_client.get('/api/v1/products/?category_id=1')
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
+
 
 @pytest.mark.django_db
 class TestCreateProduct:
@@ -148,7 +143,7 @@ class TestCreateProduct:
             }
         )
 
-        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_if_is_not_admin_return_403(self, authenticate, create_product):
         authenticate()
@@ -164,7 +159,6 @@ class TestCreateProduct:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data['name'] is not None
-
 
     def test_if_data_is_valid_returns_201(self, authenticate, create_product):
         authenticate(is_staff=True)
@@ -182,7 +176,8 @@ class TestCreateProduct:
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data['id'] is not None
 
-    def test_if_product_created_with_valid_data_returns_expected_data(self, authenticate, create_product):
+    def test_if_product_created_with_valid_data_returns_expected_data(
+            self, authenticate, create_product):
         authenticate(is_staff=True)
         subcategory = baker.make(SubCategory)
         response = create_product(
@@ -201,28 +196,30 @@ class TestCreateProduct:
         assert response.data['stock_quantity'] == 1
         # assert response.data['subcategory']['id'] == subcategory.id
 
+
 @pytest.mark.django_db
 class TestRetriveProduct:
     def test_if_product_exist_returns_200(self, api_client):
         product = baker.make(Product)
-        response = api_client.get(f'/api/products/{product.id}/')
+        response = api_client.get(f'/api/v1/products/{product.id}/')
 
         assert response.status_code == status.HTTP_200_OK
 
     def test_if_product_does_not_exist_returns_404(self, api_client):
-        response = api_client.get(f'/api/products/1/')
+        response = api_client.get(f'/api/v1/products/1/')
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_if_product_exist_returns_expected_data(self, api_client):
         product = baker.make(Product)
-        response = api_client.get(f'/api/products/{product.id}/')
+        response = api_client.get(f'/api/v1/products/{product.id}/')
 
         assert response.data['name'] == product.name
         assert response.data['description'] == product.description
         assert response.data['price'] == Decimal(product.price)
         assert response.data['stock_quantity'] == product.stock_quantity
         # assert response.data['subcategory']['id'] == product.subcategory.id
+
 
 @pytest.mark.django_db
 class TestUpdateProduct:
@@ -232,7 +229,7 @@ class TestUpdateProduct:
         category = baker.make(Category)
         subcategory = baker.make(SubCategory)
         data = {}
-        response = api_client.put(f'/api/products/{product.id}/', 
+        response = api_client.put(f'/api/v1/products/{product.id}/', 
         {
             "id": "0ebd1c22-4bab-4ee3-a329-977688260951",
             "name": "free",
@@ -251,7 +248,7 @@ class TestUpdateProduct:
         authenticate()
         product = baker.make(Product)
 
-        response = api_client.put(f'/api/products/{product.id}/', {'name': 'update', 'description': 'desc', 'price': 123, 'stock_quantity': 1})
+        response = api_client.put(f'/api/v1/products/{product.id}/', {'name': 'update', 'description': 'desc', 'price': 123, 'stock_quantity': 1})
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -259,7 +256,7 @@ class TestUpdateProduct:
         authenticate(is_staff=True)
         product = baker.make(Product)
 
-        response = api_client.put(f'/api/products/{product.id}/', {'name': ''})
+        response = api_client.put(f'/api/v1/products/{product.id}/', {'name': ''})
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data['name'] is not None
@@ -281,7 +278,7 @@ class TestUpdateProduct:
             "average_rating": 0.0,
             "review_count": 0.0
         }
-        response = api_client.put(f'/api/products/{product.id}/', data)
+        response = api_client.put(f'/api/v1/products/{product.id}/', data)
 
         assert response.data['name'] == 'free'
         assert response.data['description'] == 'Why'
@@ -292,7 +289,7 @@ class TestUpdateProduct:
         authenticate(is_staff=True)
         product = baker.make(Product)
 
-        response = api_client.patch(f'/api/products/{product.id}/', {'name': 'update'})
+        response = api_client.patch(f'/api/v1/products/{product.id}/', {'name': 'update'})
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -300,7 +297,7 @@ class TestUpdateProduct:
         authenticate()
         product = baker.make(Product)
 
-        response = api_client.patch(f'/api/products/{product.id}/', {'name': 'update'})
+        response = api_client.patch(f'/api/v1/products/{product.id}/', {'name': 'update'})
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -308,7 +305,7 @@ class TestUpdateProduct:
         authenticate(is_staff=True)
         product = baker.make(Product)
 
-        response = api_client.patch(f'/api/products/{product.id}/', {'name': ''})
+        response = api_client.patch(f'/api/v1/products/{product.id}/', {'name': ''})
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data['name'] is not None
@@ -317,7 +314,7 @@ class TestUpdateProduct:
         authenticate(is_staff=True)
         product = baker.make(Product)
 
-        response = api_client.patch(f'/api/products/{product.id}/', {'name': 'update'})
+        response = api_client.patch(f'/api/v1/products/{product.id}/', {'name': 'update'})
         assert response.data['name'] == 'update'
 
 @pytest.mark.django_db
@@ -326,7 +323,7 @@ class TestDeleteProduct:
         authenticate(is_staff=True)
         product = baker.make(Product)
 
-        response = api_client.delete(f'/api/products/{product.id}/')
+        response = api_client.delete(f'/api/v1/products/{product.id}/')
 
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
@@ -334,14 +331,14 @@ class TestDeleteProduct:
         authenticate()
         product = baker.make(Product)
 
-        response = api_client.delete(f'/api/products/{product.id}/')
+        response = api_client.delete(f'/api/v1/products/{product.id}/')
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_if_delete_product_returns_404_for_non_existing_product(self, api_client, authenticate):
         authenticate(is_staff=True)
 
-        response = api_client.delete(f'/api/products/1/')
+        response = api_client.delete(f'/api/v1/products/1/')
         
         assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.data['detail'] == 'Not found.'

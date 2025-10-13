@@ -19,6 +19,7 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = "categories"
         indexes = [ models.Index(fields=['name']), ]
+        ordering = ['-updated_at']
 
 
 # Represents a subcategory under a specific category
